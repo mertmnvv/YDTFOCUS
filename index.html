@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>YDT Focus </title>
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+</head>
+<body>
+
+    <nav class="mini-nav">
+        <div class="nav-container">
+            <div class="logo">YDT<span>FOCUS</span></div>
+            
+            <div class="nav-links">
+                <button onclick="switchTab('dashboard')" class="nav-btn" id="btn-dashboard">Level UP!</button>
+                <button onclick="switchTab('reading')" class="nav-btn active-nav" id="btn-reading">Reading</button>
+                <button onclick="switchTab('grammar')" class="nav-btn" id="btn-grammar">Gramer</button>
+                <button onclick="switchTab('quiz')" class="nav-btn" id="btn-quiz">Quiz | Flash Cards</button>
+                <button onclick="switchTab('archive')" class="nav-btn" id="btn-archive">Sözlük | Phrasal Verbs</button>
+                <button onclick="switchTab('mistakes')" class="nav-btn" id="btn-mistakes">Hatalar</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="app-grid">
+        
+      <section id="dashboardSection" class="tab-panel fade-in">
+            <div class="bento-container">
+                <h2 class="bento-title">Gelişim Merkezi</h2>
+
+                <div class="bento-box bento-target">
+                    <div class="bento-target-top">
+                        <span class="bento-label">YDT Kelime Hedefi</span>
+                        <span class="bento-value"><span id="targetCurrent">0</span> / 2000</span>
+                    </div>
+                    <div class="bento-bar-bg">
+                        <div id="targetProgressBar" class="bento-bar-fill"></div>
+                    </div>
+                </div>
+
+                <div class="bento-grid">
+                    <div class="bento-box clickable-stat" id="boxTotal">
+                        <div class="bento-icon">📚</div>
+                        <div class="bento-num" id="statTotalWords">0</div>
+                        <div class="bento-label">Banka</div>
+                    </div>
+                    <div class="bento-box clickable-stat" id="boxLearned">
+                        <div class="bento-icon" style="color: var(--primary);">✅</div>
+                        <div class="bento-num" id="statLearned">0</div>
+                        <div class="bento-label">Öğrenilen</div>
+                    </div>
+                    <div class="bento-box clickable-stat" id="boxReview">
+                        <div class="bento-icon" style="color: var(--accent);">⏱️</div>
+                        <div class="bento-num" id="statToReview">0</div>
+                        <div class="bento-label">Tekrar</div>
+                    </div>
+                    <div class="bento-box">
+                        <div class="bento-icon" style="color: var(--archive);">🎯</div>
+                        <div class="bento-num" id="statAccuracy">%0</div>
+                        <div class="bento-label">Başarı</div>
+                    </div>
+                    <div class="bento-box">
+                        <div class="bento-icon">🔥</div>
+                        <div class="bento-num" id="statStreak" style="color: #ff9f0a;">0</div>
+                        <div class="bento-label">Seri</div>
+                    </div>
+                    <div class="bento-box">
+                        <div class="bento-icon">⏳</div>
+                        <div class="bento-num" id="statTime" style="color: #32ade6;">0 dk</div>
+                        <div class="bento-label">Çalışma Süresi</div>
+                    </div>
+                </div>
+
+                <div class="bento-box bento-levels">
+                    <div class="level-item clickable-stat" id="rowLvl0">
+                        <div class="level-name">Yeni</div>
+                        <div class="level-track"><div id="barLvl0" class="level-fill" style="background: #bae6fd;"></div></div>
+                        <div class="level-count" id="countLvl0">0</div>
+                    </div>
+                    <div class="level-item clickable-stat" id="rowLvl1">
+                        <div class="level-name">1. Gün</div>
+                        <div class="level-track"><div id="barLvl1" class="level-fill" style="background: #7dd3fc;"></div></div>
+                        <div class="level-count" id="countLvl1">0</div>
+                    </div>
+                    <div class="level-item clickable-stat" id="rowLvl2">
+                        <div class="level-name">Pekişen</div>
+                        <div class="level-track"><div id="barLvl2" class="level-fill" style="background: #38bdf8;"></div></div>
+                        <div class="level-count" id="countLvl2">0</div>
+                    </div>
+                    <div class="level-item clickable-stat" id="rowLvl3">
+                        <div class="level-name">1 Hafta</div>
+                        <div class="level-track"><div id="barLvl3" class="level-fill" style="background: #0284c7;"></div></div>
+                        <div class="level-count" id="countLvl3">0</div>
+                    </div>
+                    <div class="level-item clickable-stat" id="rowLvl4">
+                        <div class="level-name">Usta</div>
+                        <div class="level-track"><div id="barLvl4" class="level-fill" style="background: #075985;"></div></div>
+                        <div class="level-count" id="countLvl4">0</div>
+                    </div>
+                </div>
+
+                <button class="bento-btn w-100" onclick="switchTab('quiz'); showQuizSub('smartQuiz');">🧠 Akıllı Tekrarı Başlat</button>
+            </div>
+        </section>
+
+       <section id="readingSection" class="tab-panel active fade-in">
+    <div class="glass-card mb-20">
+        
+        <div class="header-split" style="margin-bottom: 15px;">
+            <div class="section-title" style="margin-bottom: 0;">📝 Metin Analizi</div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items: center;">
+                
+                <select id="aiLevelSelect" class="sub-tab" style="margin-bottom:0; padding: 8px 12px; border-radius: 12px; font-size:0.9rem;">
+                    <option value="A1">A1</option>
+                    <option value="A2">A2</option>
+                    <option value="B1">B1</option>
+                    <option value="B2">B2</option>
+                    <option value="C1">C1</option>
+                </select>
+
+                <select id="aiTopicSelect" class="sub-tab" style="margin-bottom:0; padding: 8px 12px; border-radius: 12px; font-size:0.9rem;">
+                    <option value="general">🌍 Genel & İlginç Bilgiler</option>
+                    <option value="story">📚 Hikaye & Macera</option>
+                    <option value="science">🔬 Bilim & Teknoloji</option>
+                    <option value="exam">🎓 YDT/YDS Sınav Formatı</option>
+                </select>
+
+                <button class="btn-archive-play" id="btnGenerateAI" style="padding: 8px 16px; font-size:0.9rem; border-radius: 12px;" onclick="generateAIText()">✨ AI Metin Üret</button>
+            </div>
+        </div>
+        
+        <div class="color-legend">
+            <div class="legend-item" style="color: var(--archive);">
+                <span class="legend-dot" style="background: var(--archive);"></span> Phrasal Verb
+            </div>
+            <div class="legend-item" style="color: var(--primary);">
+                <span class="legend-dot" style="background: var(--primary);"></span> Bankam
+            </div>
+            <div class="legend-item" style="color: #ffcc00;">
+                <span class="legend-dot" style="background: #ffcc00;"></span> Sözlük
+            </div>
+        </div>
+
+        <textarea id="readingInput" placeholder="Analiz edilecek metni buraya yapıştırın veya yukarıdan AI ile üretin..."></textarea>
+
+
+        <div class="btn-group">
+            <button class="btn-primary" onclick="processAnalysis()">✨ Parçala & Analiz Et</button>
+            <button class="btn-ghost" id="btn-focus" onclick="toggleFocusMode()">🎯 Odak: KAPALI</button>
+            <button class="btn-ghost" onclick="clearAll()">🗑️ Temizle</button>
+            <button class="btn-ghost" style="color: var(--accent); border-color: var(--accent);" onclick="openGoogleTranslate()">🌐 Google Translate</button>
+        </div>
+    </div>
+    
+    <div class="glass-card mb-20 sticky-translator">
+        <div class="reading-header-mini">⚡ Hızlı Çeviri & Manuel Kayıt</div>
+        <div class="input-stack">
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <input type="text" id="wordInput" placeholder="Kelime..." style="margin-bottom: 0;" onkeydown="if(event.key==='Enter') fetchDetails(this.value)">
+                <button class="btn-archive-play" style="min-width: 100px;" onclick="fetchDetails(document.getElementById('wordInput').value)">Sorgula</button>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="meaningInput" placeholder="Türkçe Anlamı" style="margin-bottom: 0; flex: 2;">
+                <input type="text" id="synonymInput" placeholder="Eş Anlam" style="margin-bottom: 0; flex: 1;">
+                <button class="btn-primary" style="min-width: 120px;" onclick="saveNewWord()">💾 Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="scrollable-reading-box mb-20">
+        <div id="displayArea" class="reading-area"></div>
+    </div>
+
+   
+</section>
+        <section id="grammarSection" class="tab-panel fade-in">
+            <div class="glass-card">
+                <div class="header-split">
+                    <div class="section-title" style="margin-bottom: 0;">📖 YDT Gramer Ansiklopedisi</div>
+                </div>
+                <p class="hint-text" style="margin-top:10px; margin-bottom:20px; text-align:left;">YDT'de en çok çıkan gramer konularının özet kuralları ve örnekleri.</p>
+                <div class="grammar-accordion">
+                    <div class="acc-item">
+                        <button class="acc-header" onclick="toggleAccordion(this)">⏳ 1. Tenses (Zamanlar)</button>
+                        <div class="acc-content">
+                            <b>Present Simple (Geniş Zaman):</b> Genel doğrular, alışkanlıklar. (always, usually, often)<br>
+                            <i>Ex: Water boils at 100 degrees.</i><br><br>
+                            <b>Present Continuous (Şimdiki Zaman):</b> Şu an olan olaylar, geçici durumlar. (now, currently, at present)<br>
+                            <i>Ex: The climate is changing rapidly.</i><br><br>
+                            <b>Present Perfect (Yakın Geçmiş):</b> Geçmişte olmuş ama etkisi süren veya zamanı belirsiz olaylar. (just, already, yet, since, for)<br>
+                            <i>Ex: Scientists have discovered a new species.</i><br><br>
+                            <b>Past Simple (Di'li Geçmiş):</b> Geçmişte tamamlanmış olaylar. (yesterday, in 1990, ago)<br>
+                            <i>Ex: World War II ended in 1945.</i><br><br>
+                            <b>Past Perfect (Miş'li Geçmiş):</b> Geçmişteki iki olaydan DAHA ÖNCE olanı belirtir. (by the time, before, after)<br>
+                            <i>Ex: When I arrived, the train had already left.</i>
+                        </div>
+                    </div>
+
+                    <div class="acc-item">
+                        <button class="acc-header" onclick="toggleAccordion(this)">💡 2. Modals (Kipler)</button>
+                        <div class="acc-content">
+                            <b>Zorunluluk:</b> Must (İçten gelen/Güçlü), Have to (Dışarıdan gelen kural).<br>
+                            <b>Tavsiye:</b> Should, Ought to, Had better.<br>
+                            <b>Yetenek:</b> Can (Şu an), Could (Geçmiş), Be able to.<br>
+                            <b>İhtimal/Çıkarım:</b> May/Might/Could (Düşük ihtimal), Must be (Yüksek ihtimalle öyledir), Can't be (Olamaz).<br><br>
+                            <span style="color:var(--archive)"><b>Perfect Modals (Geçmişe Yönelik):</b></span><br>
+                            - <i>Must have V3:</i> Yapmış olmalı (Güçlü çıkarım)<br>
+                            - <i>Should have V3:</i> Yapmalıydı (Ama yapmadı, pişmanlık)<br>
+                            - <i>Could have V3:</i> Yapabilirdi (Ama yapmadı)
+                        </div>
+                    </div>
+
+                    <div class="acc-item">
+                        <button class="acc-header" onclick="toggleAccordion(this)">⚖️ 3. Conditionals (If Clauses)</button>
+                        <div class="acc-content">
+                            <b>Type 0 (Genel Doğrular):</b> If + Present Simple, Present Simple.<br>
+                            <i>Ex: If you heat ice, it melts.</i><br><br>
+                            <b>Type 1 (Gerçekleşmesi Muhtemel):</b> If + Present Simple, Will/Can/May + V1.<br>
+                            <i>Ex: If it rains tomorrow, we will stay at home.</i><br><br>
+                            <b>Type 2 (Şu Anki Hayali/Gerçek Dışı Durumlar):</b> If + Past Simple, Would/Could/Might + V1.<br>
+                            <i>Ex: If I had money (now), I would buy a car.</i><br><br>
+                            <b>Type 3 (Geçmişteki Hayali/Pişmanlık Bildiren Durumlar):</b> If + Past Perfect (had V3), Would/Could/Might have V3.<br>
+                            <i>Ex: If you had studied harder, you would have passed the YDT exam.</i>
+                        </div>
+                    </div>
+
+                    <div class="acc-item">
+                        <button class="acc-header" onclick="toggleAccordion(this)">🔗 4. Relative Clauses (Sıfat Cümlecikleri)</button>
+                        <div class="acc-content">
+                            <b>Who:</b> İnsanları niteler. <i>(The man who is standing there)</i><br>
+                            <b>Which:</b> Cansızları/Hayvanları niteler. <i>(The car which I bought)</i><br>
+                            <b>That:</b> Who ve Which yerine (virgüllü cümleler hariç) kullanılabilir.<br>
+                            <b>Whose:</b> Sahiplik bildirir (...-in). <i>(The girl whose father is a doctor)</i><br>
+                            <b>Where:</b> Yer bildirir. (in/on/at which)<br>
+                            <b>When:</b> Zaman bildirir. (on/in which)<br><br>
+                            <span style="color:var(--error)"><b>Kısaltmalar (Reduction):</b></span><br>
+                            - Etken (Yapan): <b>Ving</b> <i>(The man waiting outside)</i><br>
+                            - Edilgen (Yapılan): <b>V3</b> <i>(The book written by him)</i><br>
+                            - Sıra sayıları/Superlative sonrası: <b>To V1 / To be V3</b> <i>(The first person to arrive)</i>
+                        </div>
+                    </div>
+
+                    <div class="acc-item">
+                        <button class="acc-header" onclick="toggleAccordion(this)">🔄 5. Gerunds & Infinitives (Ving / To V1)</button>
+                        <div class="acc-content">
+                            <b>Gerund (Ving) Alan Önemli Fiiller:</b><br>
+                            admit, avoid, consider, deny, enjoy, finish, mind, postpone, risk, suggest.<br>
+                            <i>Not: Prepositionlardan (in, on, at, of vb.) sonra daima V-ing gelir. (Except: to)</i><br><br>
+                            <b>Infinitive (To V1) Alan Önemli Fiiller:</b><br>
+                            agree, afford, decide, expect, hope, manage, plan, promise, refuse, want.<br><br>
+                            <b>Anlamı Değişenler:</b><br>
+                            - <i>Stop + Ving:</i> Bir alışkanlığı/işi tamamen bırakmak. (Stop smoking)<br>
+                            - <i>Stop + to V1:</i> Başka bir şey yapmak için durmak. (Stop to smoke)
+                        </div>
+                    </div>
+
+                    <div class="acc-item">
+                        <button class="acc-header" onclick="toggleAccordion(this)">🧱 6. Conjunctions (YDT'nin Kalbi - Bağlaçlar)</button>
+                        <div class="acc-content">
+                            <b>Zıtlık Bildirenler (-e rağmen, ama):</b><br>
+                            Although, Even though, Though (Cümle alır)<br>
+                            Despite, In spite of (İsim/Ving alır)<br>
+                            However, Nevertheless, Nonetheless (Ancak)<br><br>
+                            <b>Sebep Bildirenler (Çünkü, -den dolayı):</b><br>
+                            Because, Since, As, Seeing that (Cümle alır)<br>
+                            Because of, Due to, Owing to, Thanks to (İsim/Ving alır)<br><br>
+                            <b>Sonuç Bildirenler (Bu yüzden):</b><br>
+                            Therefore, Thus, Hence, Consequently, As a result.<br><br>
+                            <b>Ek Bilgi Verenler (Dahası, Ayrıca):</b><br>
+                            Moreover, Furthermore, In addition, Besides.
+                        </div>
+                    </div>
+
+                    <div class="acc-item">
+                        <button class="acc-header" onclick="toggleAccordion(this)">🛠️ 7. Passive Voice (Edilgen Yapı)</button>
+                        <div class="acc-content">
+                            <b>Kural:</b> BE + V3<br>
+                            - Present: is/are + V3 <i>(It is done)</i><br>
+                            - Past: was/were + V3 <i>(It was done)</i><br>
+                            - Perfect: have/has been + V3 <i>(It has been done)</i><br>
+                            - Future: will be + V3 <i>(It will be done)</i><br>
+                            - Modals: can/must be + V3 <i>(It must be done)</i><br><br>
+                            <b>Önemli Kalıplar:</b><br>
+                            <i>It is said that...</i> (Söylenir ki...)<br>
+                            <i>He is known to be...</i> (Onun ... olduğu bilinir.)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="quizSection" class="tab-panel fade-in">
+            <div class="glass-card">
+                <div class="sub-tabs">
+                    <button id="navSmartQuiz" class="sub-tab" style="color:var(--accent); font-weight:700;" onclick="showQuizSub('smartQuiz')">🧠 Akıllı Tekrar</button>
+                    <button id="navTest" class="sub-tab active" onclick="showQuizSub('test')">🎯 Banka Quiz</button>
+                    <button id="navArchiveQuiz" class="sub-tab" onclick="showQuizSub('archiveQuiz')">🏆 Arşiv Quiz</button>
+                    <button id="navPhrasalQuiz" class="sub-tab" onclick="showQuizSub('phrasalQuiz')">🔗 Phrasal Quiz</button>
+                    <button id="navMistakeQuiz" class="sub-tab" onclick="showQuizSub('mistakeQuiz')">⚠️ Hatalar Quizi</button>
+                    <button id="navFlash" class="sub-tab" onclick="showQuizSub('flash')">🃏 Kartlarım</button>
+                    <button id="navArchiveFlash" class="sub-tab" onclick="showQuizSub('archiveFlash')">🗂️ Arşiv Kartları</button>
+                </div>
+
+                <div id="smartQuizArea" class="quiz-container" style="display:none;">
+                    <div id="smartQuizStartScreen" class="centered">
+                        <div class="illustration-box" style="color: var(--accent);">🧠</div>
+                        <p class="hint-text">Algoritma, unutmaya başladığın kelimeleri önüne getirir. Doğru bildikçe kelimelerin sorulma aralığı uzar.</p>
+                        <button class="btn-primary large-btn" onclick="startSmartQuiz()">Aralıklı Tekrarı Başlat</button>
+                    </div>
+                    <div id="smartQuizProgressContainer" style="width: 100%; background: #2c2c2e; height: 8px; border-radius: 4px; margin-bottom: 20px; display:none;">
+                        <div id="smartQuizProgressBar" style="width: 0%; height: 100%; background: var(--accent); border-radius: 4px; transition: 0.3s;"></div>
+                    </div>
+                    <div id="smartQuizQuestionScreen" style="display:none;">
+                        <div class="q-header"><span id="smartQuizTypeLabel" class="badge-primary" style="background:var(--accent); color:#fff; border:none;">AKILLI TEKRAR</span></div>
+                        <h2 id="smartQuizWordDisplay" class="q-word" style="color: var(--accent);"></h2>
+                        <div id="smartQuizOptions" class="options-grid"></div>
+                    </div>
+                </div>
+
+                  <div id="testArea" class="quiz-container">
+    <div id="quizStartScreen" class="centered">
+        <div class="illustration-box" >🚀</div>
+        <p class="hint-text">Sadece "Benim Bankam"daki kelimelerden rastgele test olursun.</p>
+        
+        <select id="bankQuizCount" class="sub-tab" style="margin-bottom: 15px; border: 1px solid var(--primary);">
+            <option value="10">10 Soru</option>
+            <option value="20">20 Soru</option>
+            <option value="50">50 Soru</option>
+            <option value="all">Tüm Banka</option>
+        </select>
+        <br>
+
+        <button class="btn-primary large-btn" onclick="startQuiz()">Quizi Başlat</button>
+    </div>
+    <div id="quizProgressContainer" style="width: 100%; background: #2c2c2e; height: 8px; border-radius: 4px; margin-bottom: 20px; display:none;">
+        <div id="quizProgressBar" style="width: 0%; height: 100%; background: var(--primary); border-radius: 4px; transition: 0.3s;"></div>
+    </div>
+    <div id="quizQuestionScreen" style="display:none;">
+        <div class="q-header"><span id="quizTypeLabel" class="badge-primary">SORU</span></div>
+        <h2 id="quizWordDisplay" class="q-word"></h2>
+        <div id="quizOptions" class="options-grid"></div>
+    </div>
+</div>
+                
+                <div id="archiveQuizArea" class="quiz-container" style="display:none;">
+                    <div id="arcQuizStartScreen" class="centered">
+                        <div class="illustration-box" style="color: var(--archive);">📚</div>
+                        <p class="hint-text">Soru Sayısı Seçin:</p>
+                        <select id="arcQuizCount" class="sub-tab" style="margin-bottom: 15px;">
+                            <option value="20">20 Soru</option>
+                            <option value="30">30 Soru</option>
+                            <option value="40">40 Soru</option>
+                            <option value="50">50 Soru</option>
+                        </select>
+                        <button class="btn-archive-play large-btn" onclick="startArchiveQuiz()">Arşiv Quizi Başlat</button>
+                    </div>
+                    <div id="arcQuizProgressContainer" style="width: 100%; background: #2c2c2e; height: 8px; border-radius: 4px; margin-bottom: 20px; display:none;">
+                        <div id="arcQuizProgressBar" style="width: 0%; height: 100%; background: var(--archive); border-radius: 4px; transition: 0.3s;"></div>
+                    </div>
+                    <div id="arcQuizQuestionScreen" style="display:none;">
+                        <div class="q-header"><span id="arcQuizTypeLabel" class="badge-archive">ARŞİV SORUSU</span></div>
+                        <h2 id="arcQuizWordDisplay" class="q-word" style="color: var(--archive);"></h2>
+                        <div id="arcQuizOptions" class="options-grid"></div>
+                    </div>
+                </div>
+
+                <div id="phrasalQuizArea" class="quiz-container" style="display:none;">
+                    <div id="phrasalQuizStartScreen" class="centered">
+                        <div class="illustration-box" style="color: var(--archive);">🔗</div>
+                        <p class="hint-text">Sadece Phrasal Verbs listesinden test olursun.</p>
+                        <select id="phrasalQuizCount" class="sub-tab" style="margin-bottom: 15px;">
+                            <option value="10">10 Soru</option>
+                            <option value="20">20 Soru</option>
+                            <option value="all">Tümü</option>
+                        </select>
+                        <button class="btn-archive-play large-btn" onclick="startPhrasalQuiz()">Phrasal Quizi Başlat</button>
+                    </div>
+                    <div id="phrasalQuizProgressContainer" style="width: 100%; background: #2c2c2e; height: 8px; border-radius: 4px; margin-bottom: 20px; display:none;">
+                        <div id="phrasalQuizProgressBar" style="width: 0%; height: 100%; background: var(--archive); border-radius: 4px; transition: 0.3s;"></div>
+                    </div>
+                    <div id="phrasalQuizQuestionScreen" style="display:none;">
+                        <div class="q-header"><span id="phrasalQuizTypeLabel" class="badge-archive">PHRASAL VERB</span></div>
+                        <h2 id="phrasalQuizWordDisplay" class="q-word" style="color: var(--archive);"></h2>
+                        <div id="phrasalQuizOptions" class="options-grid"></div>
+                    </div>
+                </div>
+
+          <div id="mistakeQuizArea" class="quiz-container" style="display:none;">
+                    <div id="mistakeQuizStartScreen" class="centered">
+                        <div class="illustration-box" style="color: var(--error);">🔥</div>
+                        <p class="hint-text">Sadece daha önce yanlış cevapladığın kelimelerden test olursun.</p>
+                        
+                        <select id="mistakeQuizCount" class="sub-tab" style="margin-bottom: 15px; border: 1px solid var(--error);">
+                            <option value="all">Tüm Hatalar</option>
+                            <option value="5">5 Soru</option>
+                            <option value="10">10 Soru</option>
+                            <option value="20">20 Soru</option>
+                        </select>
+                        <br>
+                        <button class="btn-error large-btn" onclick="startMistakeQuiz()">Hatalarımla Yüzleş</button>
+                    </div>
+                    <div id="mistakeQuizProgressContainer" style="width: 100%; background: #2c2c2e; height: 8px; border-radius: 4px; margin-bottom: 20px; display:none;">
+                        <div id="mistakeQuizProgressBar" style="width: 0%; height: 100%; background: var(--error); border-radius: 4px; transition: 0.3s;"></div>
+                    </div>
+                    <div id="mistakeQuizQuestionScreen" style="display:none;">
+                        <div class="q-header"><span id="mistakeQuizTypeLabel" class="badge-error">ZAYIF NOKTA</span></div>
+                        <h2 id="mistakeQuizWordDisplay" class="q-word" style="color: var(--error);"></h2>
+                        <div id="mistakeQuizOptions" class="options-grid"></div>
+                    </div>
+                </div>
+
+                <div id="flashArea" class="flash-container" style="display:none;">
+                    <div class="flash-progress"><span id="flashCurrentIndex">0</span> / <span id="flashTotalCount">0</span></div>
+                    <div class="card-scene">
+                        <div id="fCard" class="f-card" onclick="this.classList.toggle('flipped')">
+                            <div class="f-face f-front">
+                                <span id="flashFrontPrompt" style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:8px; font-weight:600;"></span>
+                                <div style="display:flex; align-items:center; gap:8px; justify-content:center;">
+                                    <h2 id="flashFront">Kelime</h2>
+                                    <span class="tts-icon" id="flashFrontTTS">🔊</span>
+                                </div>
+                                <span class="tap-hint" style="margin-top: 15px;">Dokun ve Gör</span>
+                            </div>
+                            <div class="f-face f-back">
+                                <div class="f-back-content">
+                                    <h3 id="flashBackMeaning">Anlam</h3>
+                                    <div id="flashBackSynonym" class="f-synonym">Eş Anlam</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="f-nav">
+                        <button class="btn-ghost" onclick="previousFlashcard()">Önceki</button>
+                        <button class="btn-primary" onclick="nextFlashcard()">Sıradaki</button>
+                    </div>
+                </div>
+
+                <div id="archiveFlashArea" class="flash-container" style="display:none;">
+                    <div class="flash-progress"><span id="arcFlashCurrentIndex">0</span> / <span id="arcFlashTotalCount">0</span></div>
+                    <div class="card-scene">
+                        <div id="arcFCard" class="f-card" onclick="this.classList.toggle('flipped')">
+                            <div class="f-face f-front">
+                                <span id="arcFlashFrontPrompt" style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:8px; font-weight:600;"></span>
+                                <div style="display:flex; align-items:center; gap:8px; justify-content:center;">
+                                    <h2 id="arcFlashFront" style="color: var(--archive);">Kelime</h2>
+                                    <span class="tts-icon" id="arcFlashFrontTTS">🔊</span>
+                                </div>
+                                <span class="tap-hint" style="margin-top: 15px;">Dokun ve Gör</span>
+                            </div>
+                            <div class="f-face f-back" style="border-color: var(--archive);">
+                                <div class="f-back-content">
+                                    <h3 id="arcFlashBackMeaning">Anlam</h3>
+                                    <div id="arcFlashBackSynonym" class="f-synonym" style="color: var(--archive);">Eş Anlam</div>
+                                    <button class="btn-add-archive" style="margin-top:15px; width:100%;" onclick="addCurrentArcFlashToBank(event)">+ Bankaya Ekle</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="f-nav">
+                        <button class="btn-ghost" onclick="previousArchiveFlashcard()">Önceki</button>
+                        <button class="btn-archive-play" onclick="nextArchiveFlashcard()">Sıradaki</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="archiveSection" class="tab-panel fade-in">
+            <div class="glass-card">
+                <div class="header-split">
+                    <div class="section-title" style="margin-bottom: 0;">📚 YDT Arşivi</div>
+                    <span class="badge-archive" id="archiveCountBadge">0 Kayıt</span>
+                </div>
+                
+                <div class="sub-tabs" style="margin-top:10px; margin-bottom:15px; border-bottom:none;">
+                    <button id="navArcWords" class="sub-tab active" onclick="switchArchiveTab('words')">Akademik Sözlük</button>
+                    <button id="navArcPhrasal" class="sub-tab" onclick="switchArchiveTab('phrasal')">Phrasal Verbs</button>
+                </div>
+
+                <div id="archiveWordsList" class="scroll-list" style="height: 450px; overflow-y: auto;"></div>
+                
+                <div class="pagination-controls" style="display:flex; justify-content:space-between; margin-top:15px; align-items:center;">
+                    <button class="btn-ghost" style="padding: 8px 16px;" onclick="prevArchivePage()">Önceki</button>
+                    <span id="archivePageInfo" style="color:var(--text-muted); font-weight:600;">Sayfa 1 / 1</span>
+                    <button class="btn-archive-play" style="padding: 8px 16px;" onclick="nextArchivePage()">Sonraki</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="mistakesSection" class="tab-panel fade-in">
+            <div class="glass-card">
+                <div class="header-split">
+                    <div class="section-title" style="color:var(--error); margin-bottom: 0;">⚠️ Hatalarım</div>
+                    <button class="btn-text-red" onclick="clearMistakes()">Sıfırla</button>
+                </div>
+                <div id="mistakesList" class="scroll-list" style="margin-top: 15px;"></div>
+            </div>
+        </section>
+    </div>
+
+ <div id="engDictPopup" class="eng-dict-popup">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+            <b id="engDictWord" style="color:var(--accent); font-size:1.2rem;">Word</b>
+            <button onclick="document.getElementById('engDictPopup').style.display='none'" style="background:none; border:none; color:#fff; cursor:pointer; font-size: 1.2rem;">✕</button>
+        </div>
+        <div id="engDictContent" style="font-size:0.9rem; color:var(--text-muted); max-height:200px; overflow-y:auto;">
+            Tanım aranıyor...
+        </div>
+    </div>
+    <div id="statsModal" class="stats-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" style="margin:0; color:#fff;">Detay</h3>
+                <button onclick="closeStatsModal()" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;">✕</button>
+            </div>
+            <div id="modalBody" class="modal-body"></div>
+        </div>
+    </div>
+<div id="mobileRadialMenu" class="mobile-radial-menu">
+        <div class="radial-overlay" onclick="toggleMobileMenu()"></div>
+        <div class="radial-items-container">
+            
+            <button class="radial-center-btn" onclick="handleRadialClick('dashboard')">
+                <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="7 13 12 8 17 13"></polyline>
+                    <polyline points="7 21 12 16 17 21"></polyline>
+                </svg>
+                <span>Level UP</span>
+            </button>
+            
+            <button class="radial-item" style="--angle: 270deg;" onclick="handleRadialClick('reading')">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                </svg>
+                <span>Reading</span>
+            </button>
+            
+            <button class="radial-item" style="--angle: 342deg;" onclick="handleRadialClick('grammar')">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 20h9"></path>
+                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                </svg>
+                <span>Gramer</span>
+            </button>
+            
+            <button class="radial-item" style="--angle: 54deg;" onclick="handleRadialClick('quiz')">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                <span>Quiz</span>
+            </button>
+            
+            <button class="radial-item" style="--angle: 126deg;" onclick="handleRadialClick('archive')">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span>Arşiv</span>
+            </button>
+            
+            <button class="radial-item" style="--angle: 198deg;" onclick="handleRadialClick('mistakes')">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                <span>Hatalar</span>
+            </button>
+        </div>
+    </div>
+
+    <button id="mobileMenuFab" class="mobile-fab" onclick="toggleMobileMenu()">
+        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+        </svg>
+    </button>
+
+    <button class="floating-bank-btn" onclick="toggleBankDrawer()">
+        🏦 <span class="floating-bank-badge" id="globalBankCount">0</span>
+    </button>
+
+    <div id="globalBankDrawer" class="global-bank-drawer">
+        <div class="drawer-header">
+            <h2>🏦 Bankam</h2>
+            <button class="close-drawer-btn" onclick="toggleBankDrawer()">✕</button>
+        </div>
+        
+        <div style="display:flex; gap:10px; margin-bottom: 15px;">
+            <input type="text" class="search-input" placeholder="Bankanda kelime ara..." oninput="filterWords(this.value)" style="margin-bottom:0;">
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px; gap:10px;">
+            <button class="btn-ghost w-100" style="padding: 10px; font-size:0.85rem;" onclick="exportData()">📤 İndir</button>
+            <button class="btn-ghost w-100" style="padding: 10px; font-size:0.85rem;" onclick="document.getElementById('importFile').click()">📥 Yükle</button>
+            <input type="file" id="importFile" style="display:none" onchange="importData(event)" accept=".json">
+        </div>
+
+        <div id="savedWordsList" class="scroll-list" style="flex:1; max-height:none; overflow-y:auto; padding-right:10px;"></div>
+        
+        <button id="showMoreBankBtn" class="btn-primary w-100" style="display:none; margin-top:15px;" onclick="showMoreBank()">Daha Fazla Kelime Yükle</button>
+    </div>
+
+    <div class="dict-modal-overlay" id="dictOverlay" onclick="closeDictModal(event)">
+    <div class="dict-modal" onclick="event.stopPropagation()">
+        <button class="close-dict-btn" onclick="closeDictModal()">✕</button>
+        <div id="dictContent">
+            </div>
+    </div>
+</div>
+
+<div id="aiReadingQuizSection" style="margin-top: 50px; padding: 30px; border-top: 2px dashed rgba(255,255,255,0.1); display: none; text-align: center;">
+    
+    <h2 style="font-size: 1.6rem; color: var(--accent); margin-bottom: 10px;">🎯 Reading Check</h2>
+    <p style="color: var(--text-muted); margin-bottom: 25px;">Metni bitirdiysen yapay zeka sorularıyla kendini test et!</p>
+    
+    <button id="btnCreateReadingQuiz" class="btn-archive-play" 
+            onclick="generateAIQuiz()" 
+            style="background: var(--accent); padding: 14px 40px; font-weight: 800; border-radius: 15px; cursor: pointer;">
+        📊 Soruları Hazırla
+    </button>
+
+    <div id="aiReadingQuizList" class="quiz-area" style="margin-top: 30px; text-align: left;"></div>
+</div>
+
+    <div id="tooltip" class="word-tooltip"></div>
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
