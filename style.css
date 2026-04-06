@@ -1320,6 +1320,55 @@ select.sub-tab { background: var(--bg); border: 1px solid var(--border); }
 }
 
 
+/* YDT Taktik Butonu ve Kutusu Tasarımı */
+.tactic-btn {
+    background: rgba(255, 159, 10, 0.1);
+    color: #ff9f0a;
+    border: 1px solid rgba(255, 159, 10, 0.3);
+    padding: 10px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 800;
+    width: 100%;
+    text-align: left;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.tactic-btn:hover {
+    background: rgba(255, 159, 10, 0.2);
+}
+
+.tactic-content {
+    background: rgba(255, 159, 10, 0.05);
+    border-left: 4px solid #ff9f0a;
+    padding: 15px 20px;
+    margin-top: 8px;
+    border-radius: 0 10px 10px 0;
+    font-size: 0.95rem;
+    display: none; /* İlk başta gizli */
+}
+
+.tactic-content ul {
+    margin: 0;
+    padding-left: 20px;
+    color: #f2f2f7;
+}
+
+.tactic-content li {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.tactic-content b {
+    color: #ff9f0a;
+}
+
+
+
 /* Mobil Uyum */
 @media screen and (max-width: 600px) {
     .global-bank-drawer { width: 100vw; right: -100vw; }
