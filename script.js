@@ -140,8 +140,15 @@ async function generateAIText() {
     } finally {
         if (typeof processAnalysis === 'function') processAnalysis(); 
         btn.disabled = false; btn.innerText = "✨ AI Metin Üret";
+        
         const quizArea = document.getElementById('aiReadingQuizSection');
         if(quizArea) quizArea.style.display = 'block';
+
+        // EKSİK OLAN KISIM: YENİ METİN ÜRETİLİNCE QUİZİ SIFIRLA
+        const quizBtn = document.getElementById('btnCreateReadingQuiz');
+        const quizList = document.getElementById('aiReadingQuizList');
+        if (quizBtn) quizBtn.style.display = 'inline-block';
+        if (quizList) quizList.innerHTML = '';
     }
 }
 
@@ -1057,37 +1064,181 @@ function toggleMobileMenu() {
 function handleRadialClick(tabId) { switchTab(tabId); toggleMobileMenu(); }
 function toggleBankDrawer() { const drawer = document.getElementById('globalBankDrawer'); drawer.classList.toggle('is-open'); if (drawer.classList.contains('is-open')) document.body.classList.add('drawer-open'); else document.body.classList.remove('drawer-open'); }
 
-// Open World AI Quiz Generator
 let currentReadingQuestions = []; 
 async function generateAIQuiz() {
-    const text = document.getElementById('readingInput').value; const quizBtn = document.getElementById('btnCreateReadingQuiz'); const quizList = document.getElementById('aiReadingQuizList');
+    const text = document.getElementById('readingInput').value; 
+    const quizBtn = document.getElementById('btnCreateReadingQuiz'); 
+    const quizList = document.getElementById('aiReadingQuizList');
+    
     if (!text || text.length < 50) return alert("Önce bir metin üretmelisiniz!");
-    quizBtn.style.display = 'none'; quizList.innerHTML = "<p style='text-align:center; color:var(--accent); padding:20px;'>AI metni analiz ediyor...</p>"; quizList.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    const prompt = `Based on the text, create 3 multiple-choice questions. Crucial: For each question, identify the EXACT sentence index from the text that contains the answer (0 for 1st sentence, 1 for 2nd...). Format your response ONLY as a JSON array: [{"q": "Question?", "a": "A", "b": "B", "c": "C", "d": "D", "correct": "a", "evidenceIndex": 0}] Text: ${text}`;
+    
+    quizBtn.style.display = 'none'; 
+    quizList.innerHTML = "<p style='text-align:center; color:var(--accent); padding:20px;'>⏳ AI metni analiz edip soruları hazırlıyor (10-15 sn sürebilir)...</p>"; 
+    quizList.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+    // PROMPT SADELEŞTİRİLDİ: Sadece JSON objesi istiyoruz.
+    const prompt = `You are a strict JSON generator. Based on the text below, create exactly 3 multiple-choice questions. 
+    CRITICAL RULES:
+    1. The output MUST be a valid JSON object.
+    2. The JSON object MUST have a single key "questions" containing an array of 3 objects.
+    3. Keys MUST be exactly: "q", "a", "b", "c", "d", "correct" (value must be a, b, c, or d), "evidenceIndex" (integer).
+    
+    Text to analyze: ${text}`;
+    
     const GROQ_API_KEY = "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"; 
+    
     try {
-        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", { method: "POST", headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" }, body: JSON.stringify({ model: "llama-3.1-8b-instant", messages: [{ role: "user", content: prompt }], temperature: 0.4 }) });
-        const data = await response.json(); const rawContent = data.choices[0].message.content; const jsonMatch = rawContent.match(/\[[\s\S]*\]/);
-        currentReadingQuestions = JSON.parse(jsonMatch ? jsonMatch[0] : rawContent); renderReadingQuizFinal(currentReadingQuestions);
-    } catch (error) { quizList.innerHTML = "<p style='color:var(--error); text-align:center;'>Hata oluştu.</p>"; quizBtn.style.display = 'inline-block'; }
-}
-function renderReadingQuizFinal(questions) { const quizList = document.getElementById('aiReadingQuizList'); let html = ""; questions.forEach((item, index) => { html += `<div class="quiz-card" id="ai-q-card-${index}" style="margin-bottom:20px; background:rgba(255,255,255,0.03); border:1px solid var(--border); padding:20px; border-radius:20px;"><div class="quiz-question" style="font-weight:700; margin-bottom:15px;">${index + 1}. ${item.q}</div><div class="quiz-options" style="display:flex; flex-direction:column; gap:10px;"><button class="quiz-opt" onclick="checkReadingAnswer(this, ${index}, 'a')">A) ${item.a}</button><button class="quiz-opt" onclick="checkReadingAnswer(this, ${index}, 'b')">B) ${item.b}</button><button class="quiz-opt" onclick="checkReadingAnswer(this, ${index}, 'c')">C) ${item.c}</button><button class="quiz-opt" onclick="checkReadingAnswer(this, ${index}, 'd')">D) ${item.d}</button></div></div>`; }); quizList.innerHTML = html; }
-function checkReadingAnswer(btn, qIndex, selectedLetter) {
-    const question = currentReadingQuestions[qIndex]; const card = document.getElementById(`ai-q-card-${qIndex}`); const options = card.querySelectorAll('.quiz-opt');
-    options.forEach(opt => opt.style.pointerEvents = 'none');
-    if (selectedLetter === question.correct) { btn.classList.add('correct'); if(typeof createConfetti === 'function') createConfetti(btn); } 
-    else {
-        btn.classList.add('wrong'); const allSentences = document.querySelectorAll('.focus-sentence');
-        if (allSentences[question.evidenceIndex]) {
-            allSentences.forEach(s => s.style.background = "none"); const evidence = allSentences[question.evidenceIndex];
-            evidence.style.background = "rgba(255, 69, 58, 0.3)"; evidence.style.borderBottom = "2px solid var(--error)"; evidence.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            setTimeout(() => { evidence.style.transition = "all 2s"; evidence.style.background = "rgba(255, 69, 58, 0.1)"; }, 3000);
+        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", { 
+            method: "POST", 
+            headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" }, 
+            body: JSON.stringify({ 
+                model: "llama-3.1-8b-instant", 
+                messages: [{ role: "user", content: prompt }], 
+                temperature: 0.1,
+                // İŞTE SİHİRLİ KOD BURASI: Yapay zekanın sohbet etmesini engeller, sadece kod üretmeye zorlar!
+                response_format: { type: "json_object" } 
+            }) 
+        });
+        
+        if (!response.ok) throw new Error("API Sunucu Hatası");
+        
+        const data = await response.json(); 
+        const rawContent = data.choices[0].message.content; 
+        
+        // Artık cımbızlamaya gerek yok, çünkü API bize %100 temiz bir JSON göndermek zorunda.
+        const parsedData = JSON.parse(rawContent);
+        
+        if (!parsedData.questions || !Array.isArray(parsedData.questions)) {
+            throw new Error("Format bozuk");
         }
-        options.forEach(opt => { if (opt.innerText.toLowerCase().startsWith(question.correct + ")")) opt.classList.add('correct'); });
+        
+        currentReadingQuestions = parsedData.questions; 
+        renderReadingQuizFinal(currentReadingQuestions);
+        
+    } catch (error) { 
+        console.error("AI Quiz Format Hatası Detayı:", error);
+        quizList.innerHTML = `
+            <div style="text-align:center; padding:15px; border:1px solid rgba(255,69,58,0.3); border-radius:15px; background:rgba(255,69,58,0.1);">
+                <p style='color:var(--error); font-weight:800; margin-bottom:5px;'>Bağlantı Zaman Aşımı</p>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Yapay zeka yanıt verirken bir sorun oluştu. Lütfen tekrar deneyin.</p>
+                <button class="btn-primary" style="background:#ff453a; color:#fff;" onclick="generateAIQuiz()">🔄 Tekrar Soru Üret</button>
+            </div>`; 
+        quizBtn.style.display = 'inline-block'; 
     }
 }
-function createConfetti(target) { for(let i=0; i<10; i++) { const confetti = document.createElement('div'); confetti.innerText = "🎉"; confetti.style.position = 'fixed'; confetti.style.left = target.getBoundingClientRect().left + 'px'; confetti.style.top = target.getBoundingClientRect().top + 'px'; confetti.style.fontSize = '20px'; confetti.style.transition = 'all 1s ease-out'; confetti.style.zIndex = '10000'; document.body.appendChild(confetti); setTimeout(() => { confetti.style.transform = `translate(${(Math.random()-0.5)*200}px, ${(Math.random()-0.5)*200}px) rotate(${Math.random()*360}deg)`; confetti.style.opacity = '0'; }, 50); setTimeout(() => confetti.remove(), 1000); } }
+// 1. SORULARI EKRANA ÇİZEN FONKSİYON (Silinen kısım)
+function renderReadingQuizFinal(questions) { 
+    const quizList = document.getElementById('aiReadingQuizList'); 
+    let html = ""; 
+    questions.forEach((item, index) => { 
+        html += `
+        <div class="quiz-card" id="ai-q-card-${index}" style="margin-bottom:20px; background:rgba(255,255,255,0.03); border:1px solid var(--border); padding:20px; border-radius:20px;">
+            <div class="quiz-question" style="font-weight:700; margin-bottom:15px; color:#fff; font-size:1.1rem;">
+                <span style="color:var(--accent);">${index + 1}.</span> ${item.q}
+            </div>
+            <div class="quiz-options" style="display:flex; flex-direction:column; gap:10px;">
+                <button class="quiz-opt" onclick="checkReadingAnswer(this, ${index}, 'a')"><b style="color:var(--accent);">A)</b> ${item.a}</button>
+                <button class="quiz-opt" onclick="checkReadingAnswer(this, ${index}, 'b')"><b style="color:var(--accent);">B)</b> ${item.b}</button>
+                <button class="quiz-opt" onclick="checkReadingAnswer(this, ${index}, 'c')"><b style="color:var(--accent);">C)</b> ${item.c}</button>
+                <button class="quiz-opt" onclick="checkReadingAnswer(this, ${index}, 'd')"><b style="color:var(--accent);">D)</b> ${item.d}</button>
+            </div>
+        </div>`; 
+    }); 
+    quizList.innerHTML = html; 
+}
 
+// 1. CEVAP KONTROL FONKSİYONU (Güncellendi)
+function checkReadingAnswer(btn, qIndex, selectedLetter) {
+    const question = currentReadingQuestions[qIndex]; 
+    const card = document.getElementById(`ai-q-card-${qIndex}`); 
+    const options = card.querySelectorAll('.quiz-opt');
+    
+    // Tıklandıktan sonra diğer şıkları kilitle
+    options.forEach(opt => opt.style.pointerEvents = 'none');
+    
+    if (selectedLetter === question.correct.toLowerCase()) { 
+        btn.classList.add('correct-ans'); 
+        if(typeof createConfetti === 'function') createConfetti(btn); 
+    } else {
+        btn.classList.add('wrong-ans'); 
+        
+        const allSentences = document.querySelectorAll('.focus-sentence');
+        if (allSentences[question.evidenceIndex]) {
+            // Önceki tüm vurguları temizle
+            allSentences.forEach(s => { 
+                s.style.background = "none"; 
+                s.style.borderBottom = "none"; 
+            }); 
+            
+            const evidence = allSentences[question.evidenceIndex];
+            
+            // SADECE ALTINI ÇİZ (Arka planı kırmızı yapma)
+            evidence.style.borderBottom = "2px dashed var(--error)"; 
+            
+            // "HATAMI GÖSTER" BUTONUNU EKLE (Eğer daha önce eklenmediyse)
+            let btnContainer = card.querySelector('.mistake-btn-container');
+            if (!btnContainer) {
+                btnContainer = document.createElement('div');
+                btnContainer.className = 'mistake-btn-container';
+                btnContainer.style.marginTop = "15px";
+                btnContainer.innerHTML = `
+                    <button class="btn-ghost" style="color:var(--error); border-color:var(--error); width:100%; font-weight:700;" onclick="showMistakeInText(${question.evidenceIndex}, this)">
+                        🔍 Hatamı Metinde Göster
+                    </button>`;
+                card.appendChild(btnContainer);
+            }
+        }
+        
+        // Doğru cevabı yeşil yap
+        options.forEach(opt => { 
+            if (opt.innerText.toLowerCase().startsWith(question.correct.toLowerCase() + ")")) opt.classList.add('correct-ans'); 
+        });
+    }
+}
+
+// 2. YENİ EKLENEN FONKSİYON: Butona Basılınca Kırmızı Yapan Kod
+function showMistakeInText(evidenceIndex, btnElement) {
+    const allSentences = document.querySelectorAll('.focus-sentence');
+    const evidence = allSentences[evidenceIndex];
+    
+    if (evidence) {
+        // Metni kırmızıyla vurgula ve ekranda o kısma kaydır
+        evidence.style.background = "rgba(255, 69, 58, 0.3)"; 
+        evidence.style.borderBottom = "2px solid var(--error)"; 
+        evidence.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Animasyonlu bir şekilde kırmızılığı hafiflet
+        setTimeout(() => { 
+            evidence.style.transition = "all 2s"; 
+            evidence.style.background = "rgba(255, 69, 58, 0.1)"; 
+        }, 3000);
+        
+        // Butonu "Gösterildi" olarak değiştir ve tıklandıktan sonra kapat
+        btnElement.innerText = "👀 Metinde İşaretlendi";
+        btnElement.style.opacity = "0.5";
+        btnElement.style.pointerEvents = "none";
+    }
+}
+
+// 3. DOĞRU BİLİNCE ÇIKAN ANİMASYON
+function createConfetti(target) { 
+    for(let i=0; i<10; i++) { 
+        const confetti = document.createElement('div'); 
+        confetti.innerText = "🎉"; 
+        confetti.style.position = 'fixed'; 
+        confetti.style.left = target.getBoundingClientRect().left + 'px'; 
+        confetti.style.top = target.getBoundingClientRect().top + 'px'; 
+        confetti.style.fontSize = '20px'; 
+        confetti.style.transition = 'all 1s ease-out'; 
+        confetti.style.zIndex = '10000'; 
+        document.body.appendChild(confetti); 
+        setTimeout(() => { 
+            confetti.style.transform = `translate(${(Math.random()-0.5)*200}px, ${(Math.random()-0.5)*200}px) rotate(${Math.random()*360}deg)`; 
+            confetti.style.opacity = '0'; 
+        }, 50); 
+        setTimeout(() => confetti.remove(), 1000); 
+    } 
+}
 
 // =======================================================================
 // [6] HERO PATH ENGINE (TAM ENTEGRE - ZERO TO HERO)
