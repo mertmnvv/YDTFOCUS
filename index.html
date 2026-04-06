@@ -19,9 +19,11 @@
                 <button onclick="switchTab('dashboard')" class="nav-btn" id="btn-dashboard">Level UP!</button>
                 <button onclick="switchTab('reading')" class="nav-btn active-nav" id="btn-reading">Reading</button>
                 <button onclick="switchTab('grammar')" class="nav-btn" id="btn-grammar">Gramer</button>
-                <button onclick="switchTab('quiz')" class="nav-btn" id="btn-quiz">Quiz | Flash Cards</button>
-                <button onclick="switchTab('archive')" class="nav-btn" id="btn-archive">Sözlük | Phrasal Verbs</button>
+                <button onclick="switchTab('quiz')" class="nav-btn" id="btn-quiz">Quiz|Flash Cards</button>
+                <button onclick="switchTab('archive')" class="nav-btn" id="btn-archive">Sözlük|Phrasal Verbs</button>
                 <button onclick="switchTab('mistakes')" class="nav-btn" id="btn-mistakes">Hatalar</button>
+                <button onclick="switchTab('hero')" class="nav-btn" id="btn-hero">Zero to Hero</button>
+                <button onclick="switchTab('examSimulation')" class="nav-btn" id="btn-examSimulation">Simülasyon</button>
             </div>
         </div>
     </nav>
@@ -175,6 +177,7 @@
         <div id="displayArea" class="reading-area"></div>
     </div>
 
+   
    
 </section>
         <section id="grammarSection" class="tab-panel fade-in">
@@ -471,12 +474,12 @@
         <section id="archiveSection" class="tab-panel fade-in">
             <div class="glass-card">
                 <div class="header-split">
-                    <div class="section-title" style="margin-bottom: 0;">📚 YDT Arşivi</div>
+                    <div class="section-title" style="margin-bottom: 0;">Arşiv</div>
                     <span class="badge-archive" id="archiveCountBadge">0 Kayıt</span>
                 </div>
                 
                 <div class="sub-tabs" style="margin-top:10px; margin-bottom:15px; border-bottom:none;">
-                    <button id="navArcWords" class="sub-tab active" onclick="switchArchiveTab('words')">Akademik Sözlük</button>
+                    <button id="navArcWords" class="sub-tab active" onclick="switchArchiveTab('words')">Sözlük</button>
                     <button id="navArcPhrasal" class="sub-tab" onclick="switchArchiveTab('phrasal')">Phrasal Verbs</button>
                 </div>
 
@@ -520,60 +523,68 @@
         </div>
     </div>
 <div id="mobileRadialMenu" class="mobile-radial-menu">
-        <div class="radial-overlay" onclick="toggleMobileMenu()"></div>
-        <div class="radial-items-container">
-            
-            <button class="radial-center-btn" onclick="handleRadialClick('dashboard')">
-                <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="7 13 12 8 17 13"></polyline>
-                    <polyline points="7 21 12 16 17 21"></polyline>
-                </svg>
-                <span>Level UP</span>
-            </button>
-            
-            <button class="radial-item" style="--angle: 270deg;" onclick="handleRadialClick('reading')">
-                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-                </svg>
-                <span>Reading</span>
-            </button>
-            
-            <button class="radial-item" style="--angle: 342deg;" onclick="handleRadialClick('grammar')">
-                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 20h9"></path>
-                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-                </svg>
-                <span>Gramer</span>
-            </button>
-            
-            <button class="radial-item" style="--angle: 54deg;" onclick="handleRadialClick('quiz')">
-                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                </svg>
-                <span>Quiz</span>
-            </button>
-            
-            <button class="radial-item" style="--angle: 126deg;" onclick="handleRadialClick('archive')">
-                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                </svg>
-                <span>Arşiv</span>
-            </button>
-            
-            <button class="radial-item" style="--angle: 198deg;" onclick="handleRadialClick('mistakes')">
-                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                    <line x1="12" y1="9" x2="12" y2="13"></line>
-                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                </svg>
-                <span>Hatalar</span>
-            </button>
+    <div class="radial-overlay" onclick="toggleMobileMenu()"></div>
+    <div class="radial-items-container">
+        
+        <div class="radial-center-btn level-up-btn" onclick="toggleMobileMenu()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+            <span>LEVEL UP</span>
         </div>
+        
+        <div class="radial-item" style="--angle: 0deg;" onclick="handleRadialClick('hero')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            <span>Hero</span>
+        </div>
+
+        <div class="radial-item" style="--angle: 60deg;" onclick="handleRadialClick('reading')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+            </svg>
+            <span>Reading</span>
+        </div>
+        
+        <div class="radial-item" style="--angle: 120deg;" onclick="handleRadialClick('grammar')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+            </svg>
+            <span>Gramer</span>
+        </div>
+        
+        <div class="radial-item" style="--angle: 180deg;" onclick="handleRadialClick('quiz')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span>Quiz</span>
+        </div>
+        
+        <div class="radial-item" style="--angle: 240deg;" onclick="handleRadialClick('archive')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span>Arşiv</span>
+        </div>
+        
+        <div class="radial-item" style="--angle: 300deg;" onclick="handleRadialClick('mistakes')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span>Hatalar</span>
+        </div>
+            <div class="radial-item" style="--angle: 180deg;" onclick="handleRadialClick('examSimulation')">
+    <span style="font-size:1.5rem"></span><span>Simülasyon</span>
     </div>
 
+    </div>
+</div>
     <button id="mobileMenuFab" class="mobile-fab" onclick="toggleMobileMenu()">
         <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="7" height="7" rx="1"></rect>
@@ -629,6 +640,140 @@
 
     <div id="aiReadingQuizList" class="quiz-area" style="margin-top: 30px; text-align: left;"></div>
 </div>
+
+
+<section id="heroSection" class="tab-panel fade-in">
+            <div class="app-grid" style="max-width: 800px;">
+                <div class="hero-header-card">
+                    <h1 class="hero-main-title">ZERO TO <span>HERO</span></h1>
+                    <p class="hero-sub-title">Sıfırdan akademik zirveye uzanan rehberli yolculuğun.</p>
+                    <div class="hero-progress-container">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                            <span style="font-weight:600; color:var(--text-muted); font-size:0.9rem;">Genel Kurs İlerlemesi</span>
+                            <span id="heroOverallPercent" style="font-weight:800; color:var(--accent);">%0</span>
+                        </div>
+                        <div class="hero-bar-bg">
+                            <div id="heroOverallBar" class="hero-bar-fill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                    <button onclick="openHeroBank()" class="btn-ghost" style="margin-top: 20px; width: 100%; border: 1px solid var(--accent); color: var(--accent);">
+                        🎒 Hero Bankam (Bu yolda öğrendiklerin)
+                    </button>
+                </div>
+
+                <div class="hero-roadmap">
+                    <div class="hero-node unlocked" id="nodeA1" onclick="startHeroLevel('A1')">
+                        <div class="node-line"></div>
+                        <div class="node-icon">🌱</div>
+                        <div class="node-content">
+                            <div class="node-header"><h3>Level 1: The Awakening</h3><span class="node-badge badge-a1">A1 Beginner</span></div>
+                            <p>Temel cümle yapıları ve günlük hayatta en çok kullanılan 500 kelime.</p>
+                            <div class="node-action">Dersi Başlat ▶</div>
+                        </div>
+                    </div>
+                    <div class="hero-node locked" id="nodeA2" onclick="startHeroLevel('A2')">
+                        <div class="node-line"></div>
+                        <div class="node-icon">🧭</div>
+                        <div class="node-content">
+                            <div class="node-header"><h3>Level 2: The Explorer</h3><span class="node-badge badge-a2">A2 Pre-Int.</span></div>
+                            <p>Phrasal verb temelleri ve basit okuma parçaları ile tanışma.</p>
+                            <div class="node-action locked-text">🔒 Kilitli</div>
+                        </div>
+                    </div>
+                    <div class="hero-node locked" id="nodeB1" onclick="startHeroLevel('B1')">
+                        <div class="node-line"></div>
+                        <div class="node-icon">⚔️</div>
+                        <div class="node-content">
+                            <div class="node-header"><h3>Level 3: The Transition</h3><span class="node-badge badge-b1">B1 Intermediate</span></div>
+                            <p>Zıtlık/Sebep bağlaçları ve akademik dile ilk adım.</p>
+                            <div class="node-action locked-text">🔒 Kilitli</div>
+                        </div>
+                    </div>
+                    <div class="hero-node locked" id="nodeB2" onclick="startHeroLevel('B2')">
+                        <div class="node-line"></div>
+                        <div class="node-icon">🛡️</div>
+                        <div class="node-content">
+                            <div class="node-header"><h3>Level 4: The Challenger</h3><span class="node-badge badge-b2">B2 Upper-Int.</span></div>
+                            <p>YDT/YDS formatı, pasif yapılar ve detaylı metin analizleri.</p>
+                            <div class="node-action locked-text">🔒 Kilitli</div>
+                        </div>
+                    </div>
+                    <div class="hero-node locked" id="nodeC1" style="margin-bottom:0;" onclick="startHeroLevel('C1')">
+                        <div class="node-icon" style="box-shadow: 0 0 20px rgba(191, 90, 242, 0.5);">👑</div>
+                        <div class="node-content">
+                            <div class="node-header"><h3>Level 5: The Hero</h3><span class="node-badge badge-c1">C1 Academic</span></div>
+                            <p>Gerçek makale dili, AWL kelimeleri ve çıkarım yeteneği.</p>
+                            <div class="node-action locked-text">🔒 Kilitli</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="heroLessonSection" class="tab-panel fade-in">
+            <div class="app-grid" style="max-width: 800px;">
+                <button onclick="switchTab('hero')" class="btn-ghost" style="margin-bottom: 10px;">🔙 Haritaya Dön</button>
+                <div class="glass-card">
+                    <h2 id="heroLessonTitle" class="section-title" style="color:var(--accent); text-align:center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom:15px; margin-bottom:20px;">Ders Yükleniyor...</h2>
+                    <div id="heroLessonLoading" class="centered">
+                        <div class="illustration-box" style="animation: pulse 1.5s infinite; font-size: 4rem;">👨‍🏫</div>
+                        <p style="color: var(--accent); font-weight: bold; margin-top: 10px;">AI Eğitmeniniz dersi yazıyor...</p>
+                    </div>
+                    <div id="heroLessonContent" class="reading-area" style="display: none; padding: 10px;"></div>
+                    <div id="heroMiniQuizArea" style="display: none; margin-top: 30px; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 20px; border: 1px solid var(--border);">
+                        <h3 style="text-align:center; color:var(--accent); margin-bottom:15px;">🧠 Öğrendiklerini Kanıtla</h3>
+                        <div id="miniQuizQuestions" style="display: flex; flex-direction: column; gap: 15px;"></div>
+                    </div>
+                    <div id="heroFinalExamArea" style="display: none; margin-top: 20px;">
+                        <div id="finalExamQuestions" style="display: flex; flex-direction: column; gap: 15px;"></div>
+                    </div>
+                    <div id="heroLessonActions" style="display: none; margin-top: 30px; text-align: center;">
+                        <button class="btn-primary large-btn" onclick="completeHeroLesson()" style="background:#30d158; color:#000;">✅ Dersi Tamamla & Kelimeleri Al</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="examSimulationSection" class="tab-panel fade-in">
+            <div class="exam-container">
+                <div id="examStartScreen" class="student-welcome-card">
+                    <div id="examWelcomeContent">
+                        <h1 style="color: var(--accent); margin-bottom:15px;">Gerçek YDT Deneyimi</h1>
+                        <p style="margin-bottom:20px; color:var(--text-muted);">80 Soru, 120 Dakika, %100 OSYM Formatı.</p>
+                        <button class="start-marathon-btn" onclick="startFullExam()">Sınavı Başlat 🚀</button>
+                    </div>
+                    <div id="examResultContent" style="display: none;">
+                        <h1 style="color: var(--accent);">📋 Sınav Karnesi</h1>
+                        <div class="result-stats-grid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin:20px 0;">
+                            <div class="res-item" style="background:rgba(255,255,255,0.05); padding:10px; border-radius:10px;">Doğru: <b id="resCorrect">0</b></div>
+                            <div class="res-item" style="background:rgba(255,255,255,0.05); padding:10px; border-radius:10px;">Yanlış: <b id="resWrong">0</b></div>
+                            <div class="res-item" style="background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; border:1px solid var(--accent);">Net: <b id="resNet">0</b></div>
+                        </div>
+                        <h3 style="text-align:left; margin-bottom:10px;">🔍 Soru Analizi (Detay için tıkla)</h3>
+                        <div id="examQuestionReport" class="report-list" style="max-height:400px; overflow-y:auto;"></div>
+                        <button class="btn-primary" style="margin-top:20px; width:100%;" onclick="location.reload()">Başa Dön</button>
+                    </div>
+                </div>
+                <div id="examActiveScreen" style="display: none;">
+                    <div class="exam-status-bar" style="display:flex; justify-content:space-between; margin-bottom:20px; align-items:center;">
+                        <div class="status-left">⏳ <span id="examTimer">120:00</span></div>
+                        <div id="examProgressBadge" class="question-number-badge">Soru 1</div>
+                        <button onclick="confirmFinishExam()" class="exam-terminate-btn" style="background:rgba(255,69,58,0.1); color:#ff453a; border:1px solid #ff453a; padding:5px 10px; border-radius:8px; cursor:pointer;">🏁 Bitir</button>
+                    </div>
+                    <div id="examQuestionBox" class="student-question-card"></div>
+                </div>
+            </div>
+        </section>
+
+    </div> <div class="stats-modal" id="heroBankModal" onclick="closeHeroBank()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 style="font-size: 1.3rem; margin:0; color:#fff;">🎒 Hero Bankam</h2>
+                <button class="btn-text-red" onclick="closeHeroBank()">Kapat</button>
+            </div>
+            <div class="modal-body" id="heroBankList" style="max-height: 60vh; overflow-y: auto;"></div>
+        </div>
+    </div>
 
     <div id="tooltip" class="word-tooltip"></div>
     <script src="data.js"></script>
