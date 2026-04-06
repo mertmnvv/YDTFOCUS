@@ -18,12 +18,12 @@
             <div class="nav-links">
                 <button onclick="switchTab('dashboard')" class="nav-btn" id="btn-dashboard">Level UP!</button>
                 <button onclick="switchTab('reading')" class="nav-btn active-nav" id="btn-reading">Reading</button>
+                  <button onclick="switchTab('quiz')" class="nav-btn" id="btn-quiz">Quiz|Flash Cards</button>
+                <button onclick="switchTab('hero')" class="nav-btn" id="btn-hero">Zero to Hero</button>     
                 <button onclick="switchTab('grammar')" class="nav-btn" id="btn-grammar">Gramer</button>
-                <button onclick="switchTab('quiz')" class="nav-btn" id="btn-quiz">Quiz|Flash Cards</button>
                 <button onclick="switchTab('archive')" class="nav-btn" id="btn-archive">Sözlük|Phrasal Verbs</button>
-                <button onclick="switchTab('mistakes')" class="nav-btn" id="btn-mistakes">Hatalar</button>
-                <button onclick="switchTab('hero')" class="nav-btn" id="btn-hero">Zero to Hero</button>
                 <button onclick="switchTab('examSimulation')" class="nav-btn" id="btn-examSimulation">Simülasyon</button>
+                <button onclick="switchTab('mistakes')" class="nav-btn" id="btn-mistakes">Hatalar</button>
             </div>
         </div>
     </nav>
@@ -33,81 +33,80 @@
       <section id="dashboardSection" class="tab-panel fade-in">
             <div class="bento-container">
                 <h2 class="bento-title">Gelişim Merkezi</h2>
-
-                <div class="bento-box bento-target">
-                    <div class="bento-target-top">
-                        <span class="bento-label">YDT Kelime Hedefi</span>
-                        <span class="bento-value"><span id="targetCurrent">0</span> / 2000</span>
-                    </div>
-                    <div class="bento-bar-bg">
-                        <div id="targetProgressBar" class="bento-bar-fill"></div>
-                    </div>
-                </div>
-
-                <div class="bento-grid">
-                    <div class="bento-box clickable-stat" id="boxTotal">
-                        <div class="bento-icon">📚</div>
-                        <div class="bento-num" id="statTotalWords">0</div>
-                        <div class="bento-label">Banka</div>
-                    </div>
-                    <div class="bento-box clickable-stat" id="boxLearned">
-                        <div class="bento-icon" style="color: var(--primary);">✅</div>
-                        <div class="bento-num" id="statLearned">0</div>
-                        <div class="bento-label">Öğrenilen</div>
-                    </div>
-                    <div class="bento-box clickable-stat" id="boxReview">
-                        <div class="bento-icon" style="color: var(--accent);">⏱️</div>
-                        <div class="bento-num" id="statToReview">0</div>
-                        <div class="bento-label">Tekrar</div>
-                    </div>
-                    <div class="bento-box">
-                        <div class="bento-icon" style="color: var(--archive);">🎯</div>
-                        <div class="bento-num" id="statAccuracy">%0</div>
-                        <div class="bento-label">Başarı</div>
-                    </div>
-                    <div class="bento-box">
-                        <div class="bento-icon">🔥</div>
-                        <div class="bento-num" id="statStreak" style="color: #ff9f0a;">0</div>
-                        <div class="bento-label">Seri</div>
-                    </div>
-                    <div class="bento-box">
-                        <div class="bento-icon">⏳</div>
-                        <div class="bento-num" id="statTime" style="color: #32ade6;">0 dk</div>
-                        <div class="bento-label">Çalışma Süresi</div>
-                    </div>
-                </div>
-
-                <div class="bento-box bento-levels">
-                    <div class="level-item clickable-stat" id="rowLvl0">
-                        <div class="level-name">Yeni</div>
-                        <div class="level-track"><div id="barLvl0" class="level-fill" style="background: #bae6fd;"></div></div>
-                        <div class="level-count" id="countLvl0">0</div>
-                    </div>
-                    <div class="level-item clickable-stat" id="rowLvl1">
-                        <div class="level-name">1. Gün</div>
-                        <div class="level-track"><div id="barLvl1" class="level-fill" style="background: #7dd3fc;"></div></div>
-                        <div class="level-count" id="countLvl1">0</div>
-                    </div>
-                    <div class="level-item clickable-stat" id="rowLvl2">
-                        <div class="level-name">Pekişen</div>
-                        <div class="level-track"><div id="barLvl2" class="level-fill" style="background: #38bdf8;"></div></div>
-                        <div class="level-count" id="countLvl2">0</div>
-                    </div>
-                    <div class="level-item clickable-stat" id="rowLvl3">
-                        <div class="level-name">1 Hafta</div>
-                        <div class="level-track"><div id="barLvl3" class="level-fill" style="background: #0284c7;"></div></div>
-                        <div class="level-count" id="countLvl3">0</div>
-                    </div>
-                    <div class="level-item clickable-stat" id="rowLvl4">
-                        <div class="level-name">Usta</div>
-                        <div class="level-track"><div id="barLvl4" class="level-fill" style="background: #075985;"></div></div>
-                        <div class="level-count" id="countLvl4">0</div>
-                    </div>
-                </div>
-
-                <button class="bento-btn w-100" onclick="switchTab('quiz'); showQuizSub('smartQuiz');">🧠 Akıllı Tekrarı Başlat</button>
+<div class="bento-box bento-target">
+            <div class="bento-target-top">
+                <span class="bento-label">YDT Kelime Hedefi</span>
+                <span class="bento-value"><span id="targetCurrent">0</span> / 2000</span>
             </div>
-        </section>
+            <div class="bento-bar-bg" style="width: 100%; height: 12px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-top: 10px;">
+                <div id="targetProgressBar" class="bento-bar-fill" style="background: linear-gradient(90deg, #0a84ff, #30d158); height: 100%; border-radius: 10px; transition: width 0.5s ease;"></div>
+            </div>
+        </div>
+
+               <div class="bento-grid">
+            <div class="bento-box clickable-stat" id="boxTotal" onclick="showStatsDetail('all')">
+                <div class="bento-icon">📚</div>
+                <div class="bento-num" id="statTotalWords">0</div>
+                <div class="bento-label">Banka</div>
+            </div>
+            <div class="bento-box clickable-stat" id="boxLearned" onclick="showStatsDetail('learned')">
+                <div class="bento-icon" style="color: var(--primary);">✅</div>
+                <div class="bento-num" id="statLearned">0</div>
+                <div class="bento-label">Öğrenilen</div>
+            </div>
+            <div class="bento-box clickable-stat" id="boxReview" onclick="showStatsDetail('review')">
+                <div class="bento-icon" style="color: var(--accent);">⏱️</div>
+                <div class="bento-num" id="statToReview">0</div>
+                <div class="bento-label">Tekrar</div>
+            </div>
+            <div class="bento-box">
+                <div class="bento-icon" style="color: var(--archive);">🎯</div>
+                <div class="bento-num" id="statAccuracy">%0</div>
+                <div class="bento-label">Başarı</div>
+            </div>
+            <div class="bento-box">
+                <div class="bento-icon">🔥</div>
+                <div class="bento-num" id="statStreak" style="color: #ff9f0a;">0</div>
+                <div class="bento-label">Seri</div>
+            </div>
+            <div class="bento-box">
+                <div class="bento-icon">⏳</div>
+                <div class="bento-num" id="statTime" style="color: #32ade6;">0 dk</div>
+                <div class="bento-label">Çalışma Süresi</div>
+            </div>
+        </div>
+
+        <div class="bento-box bento-levels">
+            <div class="level-item clickable-stat" id="rowLvl0" onclick="showStatsDetail('lvl0')">
+                <div class="level-name">Yeni</div>
+                <div class="level-track"><div id="barLvl0" class="level-fill" style="background-color: #bae6fd !important;"></div></div>
+                <div class="level-count" id="countLvl0">0</div>
+            </div>
+            <div class="level-item clickable-stat" id="rowLvl1" onclick="showStatsDetail('lvl1')">
+                <div class="level-name">1. Gün</div>
+                <div class="level-track"><div id="barLvl1" class="level-fill" style="background-color: #7dd3fc !important;"></div></div>
+                <div class="level-count" id="countLvl1">0</div>
+            </div>
+            <div class="level-item clickable-stat" id="rowLvl2" onclick="showStatsDetail('lvl2')">
+                <div class="level-name">Pekişen</div>
+                <div class="level-track"><div id="barLvl2" class="level-fill" style="background-color: #38bdf8 !important;"></div></div>
+                <div class="level-count" id="countLvl2">0</div>
+            </div>
+           <div class="level-item clickable-stat" id="rowLvl3" onclick="showStatsDetail('lvl3')">
+                <div class="level-name">Akılda Kalan</div>
+                <div class="level-track"><div id="barLvl3" class="level-fill" style="background-color: #0284c7 !important;"></div></div>
+                <div class="level-count" id="countLvl3">0</div>
+            </div>
+            <div class="level-item clickable-stat" id="rowLvl4" onclick="showStatsDetail('learned')">
+                <div class="level-name">Usta</div>
+                <div class="level-track"><div id="barLvl4" class="level-fill" style="background-color: #075985 !important;"></div></div>
+                <div class="level-count" id="countLvl4">0</div>
+            </div>
+        </div>
+
+        <button class="bento-btn w-100" onclick="switchTab('quiz'); showQuizSub('smartQuiz');">🧠 Akıllı Tekrarı Başlat</button>
+    </div>
+</section>
 
        <section id="readingSection" class="tab-panel active fade-in">
     <div class="glass-card mb-20">
@@ -181,121 +180,216 @@
    
 </section>
         <section id="grammarSection" class="tab-panel fade-in">
-            <div class="glass-card">
-                <div class="header-split">
-                    <div class="section-title" style="margin-bottom: 0;">📖 YDT Gramer Ansiklopedisi</div>
-                </div>
-                <p class="hint-text" style="margin-top:10px; margin-bottom:20px; text-align:left;">YDT'de en çok çıkan gramer konularının özet kuralları ve örnekleri.</p>
-                <div class="grammar-accordion">
-                    <div class="acc-item">
-                        <button class="acc-header" onclick="toggleAccordion(this)">⏳ 1. Tenses (Zamanlar)</button>
-                        <div class="acc-content">
-                            <b>Present Simple (Geniş Zaman):</b> Genel doğrular, alışkanlıklar. (always, usually, often)<br>
-                            <i>Ex: Water boils at 100 degrees.</i><br><br>
-                            <b>Present Continuous (Şimdiki Zaman):</b> Şu an olan olaylar, geçici durumlar. (now, currently, at present)<br>
-                            <i>Ex: The climate is changing rapidly.</i><br><br>
-                            <b>Present Perfect (Yakın Geçmiş):</b> Geçmişte olmuş ama etkisi süren veya zamanı belirsiz olaylar. (just, already, yet, since, for)<br>
-                            <i>Ex: Scientists have discovered a new species.</i><br><br>
-                            <b>Past Simple (Di'li Geçmiş):</b> Geçmişte tamamlanmış olaylar. (yesterday, in 1990, ago)<br>
-                            <i>Ex: World War II ended in 1945.</i><br><br>
-                            <b>Past Perfect (Miş'li Geçmiş):</b> Geçmişteki iki olaydan DAHA ÖNCE olanı belirtir. (by the time, before, after)<br>
-                            <i>Ex: When I arrived, the train had already left.</i>
-                        </div>
-                    </div>
+    <div class="glass-card">
+        <div class="header-split">
+            <div class="section-title" style="margin-bottom: 0;">📖 YDT Gramer Ansiklopedisi</div>
+        </div>
+        
+        <div style="background: rgba(48, 209, 88, 0.1); border-left: 4px solid #30d158; padding: 15px; border-radius: 10px; margin-top: 20px; margin-bottom: 20px;">
+            <h3 style="color: #30d158; margin-bottom: 10px; font-size: 1.1rem;">YDT Başarı Sırları</h3>
+            <ul style="color: #f2f2f7; font-size: 0.9rem; line-height: 1.6; padding-left: 20px; margin: 0;">
+                <li style="margin-bottom: 8px;"><b>Detaydan Kaçın:</b> TYT yükünüz var! Aylarca gramer çalışmak yerine grameri kısa tutup "Okuduğunu Anlama"ya odaklanın. Gramer sadece çeviriyi desteklemek içindir.</li>
+                <li style="margin-bottom: 8px;"><b>AI ile Metin Okuma:</b> Her gün 10-15 kelime belirleyip eş/zıt anlamlarıyla birlikte Yapay Zekaya (AI) makale yazdırın <i>(Sistemimizdeki Reading sekmesi tam olarak bunu yapıyor!)</i>.</li>
+                <li style="margin-bottom: 8px;"><b>Süre Sınırı:</b> YDT hız sınavıdır. Deneme sürelerinizi evde 2 saatten yavaş yavaş 1.5 saate (90 dakika) indirin.</li>
+                <li><b>Deneme Analizi:</b> Analiz etmeyecekseniz deneme çözmeyin. Netleri artıran şey test çözmek değil, yapılan yanlışların (Mistakes bölümündeki gibi) analizidir.</li>
+            </ul>
+        </div>
 
-                    <div class="acc-item">
-                        <button class="acc-header" onclick="toggleAccordion(this)">💡 2. Modals (Kipler)</button>
-                        <div class="acc-content">
-                            <b>Zorunluluk:</b> Must (İçten gelen/Güçlü), Have to (Dışarıdan gelen kural).<br>
-                            <b>Tavsiye:</b> Should, Ought to, Had better.<br>
-                            <b>Yetenek:</b> Can (Şu an), Could (Geçmiş), Be able to.<br>
-                            <b>İhtimal/Çıkarım:</b> May/Might/Could (Düşük ihtimal), Must be (Yüksek ihtimalle öyledir), Can't be (Olamaz).<br><br>
-                            <span style="color:var(--archive)"><b>Perfect Modals (Geçmişe Yönelik):</b></span><br>
-                            - <i>Must have V3:</i> Yapmış olmalı (Güçlü çıkarım)<br>
-                            - <i>Should have V3:</i> Yapmalıydı (Ama yapmadı, pişmanlık)<br>
-                            - <i>Could have V3:</i> Yapabilirdi (Ama yapmadı)
-                        </div>
-                    </div>
-
-                    <div class="acc-item">
-                        <button class="acc-header" onclick="toggleAccordion(this)">⚖️ 3. Conditionals (If Clauses)</button>
-                        <div class="acc-content">
-                            <b>Type 0 (Genel Doğrular):</b> If + Present Simple, Present Simple.<br>
-                            <i>Ex: If you heat ice, it melts.</i><br><br>
-                            <b>Type 1 (Gerçekleşmesi Muhtemel):</b> If + Present Simple, Will/Can/May + V1.<br>
-                            <i>Ex: If it rains tomorrow, we will stay at home.</i><br><br>
-                            <b>Type 2 (Şu Anki Hayali/Gerçek Dışı Durumlar):</b> If + Past Simple, Would/Could/Might + V1.<br>
-                            <i>Ex: If I had money (now), I would buy a car.</i><br><br>
-                            <b>Type 3 (Geçmişteki Hayali/Pişmanlık Bildiren Durumlar):</b> If + Past Perfect (had V3), Would/Could/Might have V3.<br>
-                            <i>Ex: If you had studied harder, you would have passed the YDT exam.</i>
-                        </div>
-                    </div>
-
-                    <div class="acc-item">
-                        <button class="acc-header" onclick="toggleAccordion(this)">🔗 4. Relative Clauses (Sıfat Cümlecikleri)</button>
-                        <div class="acc-content">
-                            <b>Who:</b> İnsanları niteler. <i>(The man who is standing there)</i><br>
-                            <b>Which:</b> Cansızları/Hayvanları niteler. <i>(The car which I bought)</i><br>
-                            <b>That:</b> Who ve Which yerine (virgüllü cümleler hariç) kullanılabilir.<br>
-                            <b>Whose:</b> Sahiplik bildirir (...-in). <i>(The girl whose father is a doctor)</i><br>
-                            <b>Where:</b> Yer bildirir. (in/on/at which)<br>
-                            <b>When:</b> Zaman bildirir. (on/in which)<br><br>
-                            <span style="color:var(--error)"><b>Kısaltmalar (Reduction):</b></span><br>
-                            - Etken (Yapan): <b>Ving</b> <i>(The man waiting outside)</i><br>
-                            - Edilgen (Yapılan): <b>V3</b> <i>(The book written by him)</i><br>
-                            - Sıra sayıları/Superlative sonrası: <b>To V1 / To be V3</b> <i>(The first person to arrive)</i>
-                        </div>
-                    </div>
-
-                    <div class="acc-item">
-                        <button class="acc-header" onclick="toggleAccordion(this)">🔄 5. Gerunds & Infinitives (Ving / To V1)</button>
-                        <div class="acc-content">
-                            <b>Gerund (Ving) Alan Önemli Fiiller:</b><br>
-                            admit, avoid, consider, deny, enjoy, finish, mind, postpone, risk, suggest.<br>
-                            <i>Not: Prepositionlardan (in, on, at, of vb.) sonra daima V-ing gelir. (Except: to)</i><br><br>
-                            <b>Infinitive (To V1) Alan Önemli Fiiller:</b><br>
-                            agree, afford, decide, expect, hope, manage, plan, promise, refuse, want.<br><br>
-                            <b>Anlamı Değişenler:</b><br>
-                            - <i>Stop + Ving:</i> Bir alışkanlığı/işi tamamen bırakmak. (Stop smoking)<br>
-                            - <i>Stop + to V1:</i> Başka bir şey yapmak için durmak. (Stop to smoke)
-                        </div>
-                    </div>
-
-                    <div class="acc-item">
-                        <button class="acc-header" onclick="toggleAccordion(this)">🧱 6. Conjunctions (YDT'nin Kalbi - Bağlaçlar)</button>
-                        <div class="acc-content">
-                            <b>Zıtlık Bildirenler (-e rağmen, ama):</b><br>
-                            Although, Even though, Though (Cümle alır)<br>
-                            Despite, In spite of (İsim/Ving alır)<br>
-                            However, Nevertheless, Nonetheless (Ancak)<br><br>
-                            <b>Sebep Bildirenler (Çünkü, -den dolayı):</b><br>
-                            Because, Since, As, Seeing that (Cümle alır)<br>
-                            Because of, Due to, Owing to, Thanks to (İsim/Ving alır)<br><br>
-                            <b>Sonuç Bildirenler (Bu yüzden):</b><br>
-                            Therefore, Thus, Hence, Consequently, As a result.<br><br>
-                            <b>Ek Bilgi Verenler (Dahası, Ayrıca):</b><br>
-                            Moreover, Furthermore, In addition, Besides.
-                        </div>
-                    </div>
-
-                    <div class="acc-item">
-                        <button class="acc-header" onclick="toggleAccordion(this)">🛠️ 7. Passive Voice (Edilgen Yapı)</button>
-                        <div class="acc-content">
-                            <b>Kural:</b> BE + V3<br>
-                            - Present: is/are + V3 <i>(It is done)</i><br>
-                            - Past: was/were + V3 <i>(It was done)</i><br>
-                            - Perfect: have/has been + V3 <i>(It has been done)</i><br>
-                            - Future: will be + V3 <i>(It will be done)</i><br>
-                            - Modals: can/must be + V3 <i>(It must be done)</i><br><br>
-                            <b>Önemli Kalıplar:</b><br>
-                            <i>It is said that...</i> (Söylenir ki...)<br>
-                            <i>He is known to be...</i> (Onun ... olduğu bilinir.)
-                        </div>
+        <p class="hint-text" style="margin-top:10px; margin-bottom:20px; text-align:left;">ÖSYM'nin son 10 yıllık (2015-2025) istatistiklerine göre hazırlanmış YDT taktikleri.</p>
+        
+        <div class="grammar-accordion">
+            <div class="acc-item">
+                <button class="acc-header" onclick="toggleAccordion(this)">⏳ 1. Tenses (Zamanlar) - 2 Soru</button>
+                <div class="acc-content">
+                    <b>Present Simple:</b> Genel doğrular. <i>Ex: Water boils at 100 degrees.</i><br>
+                    <b>Present Continuous:</b> Geçici durumlar. <i>Ex: The climate is changing.</i><br>
+                    <b>Present Perfect:</b> Etkisi süren olaylar. <i>Ex: We have discovered a new planet.</i><br>
+                    <b>Past Simple:</b> Tamamlanmış zaman. <i>Ex: WWII ended in 1945.</i><br>
+                    
+                    <button class="tactic-btn" onclick="toggleTactic(this)">⚠️ ÖSYM Taktikleri</button>
+                    <div class="tactic-content">
+                        <ul>
+                            <li><b>Uyarı:</b> Tenslere aylarca çalışılmaz! Sınavda diğer konularla harmanlanmış halde gelir (bugüne kadar yaklaşık 25 kere soruldu). Temelini bilip geçmek şarttır.</li>
+                            <li><b>Zaman Bağlacı Tuzağı:</b> <i>When, as soon as, until</i> gibi bağlaçların hemen yanındaki boşluğa ASLA <b>will / would</b> gelmez!</li>
+                            <li><b>Since Klasiktir:</b> <i>Since + Past Simple (V2)</i> kalıbını görürsen, ana cümlenin boşluğu %90 <b>Present Perfect (have/has V3)</b> olur.</li>
+                        </ul>
                     </div>
                 </div>
             </div>
-        </section>
 
+            <div class="acc-item">
+                <button class="acc-header" onclick="toggleAccordion(this)">💡 2. Modals (Kipler) - 2 Soru</button>
+                <div class="acc-content">
+                    <b>Zorunluluk:</b> Must, Have to.<br>
+                    <b>İhtimal/Çıkarım:</b> May, Might, Must be (Güçlü ihtimal).<br>
+                    <span style="color:var(--archive)"><b>Perfect Modals:</b></span> Must have V3 (yapmış olmalı), Should have V3 (yapmalıydı).
+                    
+                    <button class="tactic-btn" onclick="toggleTactic(this)">⚠️ ÖSYM Taktikleri</button>
+                    <div class="tactic-content">
+                        <ul>
+                            <li><b>İstatistik:</b> Sınavda her yıl banko 2 soru gelir (bugüne kadar 15 kez soruldu).</li>
+                            <li><b>Pişmanlık Sorusu:</b> Cümle geçmişte yaşanmış kötü bir durumu anlatıyorsa şıklarda <b>should have V3</b> (yapmalıydı ama yapmadı) cevap olma ihtimali çok yüksektir.</li>
+                            <li><b>"Could" vs "Was able to":</b> Zorlu ve tek seferlik bir başarı varsa "could" yerine <b>"was able to"</b> kullanılır. ÖSYM çeldirici olarak "could" koymayı sever.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acc-item">
+                <button class="acc-header" onclick="toggleAccordion(this)">🛠️ 3. Passive & Causative - (Gizli Soru)</button>
+                <div class="acc-content">
+                    <b>Kural:</b> BE + V3 (is done, was done, has been done).<br>
+                    <b>Causative:</b> Have/Get something done (Bir şeyi başkasına yaptırmak).
+                    
+                    <button class="tactic-btn" onclick="toggleTactic(this)">⚠️ ÖSYM Taktikleri</button>
+                    <div class="tactic-content">
+                        <ul>
+                            <li><b>Uyarı:</b> Doğrudan "Passive" sorusu pek gelmez. Ancak Relative Clause kısaltmalarını ve okuduğunu anlama bölümünü yapabilmek için Passive YAPISAL olarak en kritik konudur.</li>
+                            <li><b>Nesne Testi:</b> Boşluktan hemen sonra "Neyi/Kimi" sorusunun cevabı (nesne) yoksa, o fiil %100 PASİF olmak zorundadır.</li>
+                            <li><b>Causative Dönüşü:</b> 2024 yılında sürpriz bir şekilde Causative sorusu gelmiştir, yapısını (Have sth done) bilmek hayat kurtarır.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acc-item">
+                <button class="acc-header" onclick="toggleAccordion(this)">🔗 4. Relative Clauses & Reduction</button>
+                <div class="acc-content">
+                    <b>Who:</b> İnsan, <b>Which:</b> Cansız, <b>Whose:</b> Sahiplik.<br>
+                    <span style="color:var(--error)"><b>Kısaltmalar (Reduction):</b></span> Etken = Ving, Edilgen = V3, Sıra Sayısı = To V1.
+                    
+                    <button class="tactic-btn" onclick="toggleTactic(this)">⚠️ ÖSYM Taktikleri</button>
+                    <div class="tactic-content">
+                        <ul>
+                            <li><b>İstatistik:</b> Sade "Who/Which" sorusu tarihte bir kez (2017) soruldu. Fakat KISALTMALAR (Reduction) her yıl istisnasız gelir!</li>
+                            <li><b>To Kısaltması:</b> Boşluktan önce <i>"The first, the best, the only"</i> görüyorsan, aşağıdaki kısaltma kesinlikle <b>to V1</b> veya <b>to be V3</b> olmalıdır.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acc-item">
+                <button class="acc-header" onclick="toggleAccordion(this)">🧱 5. Conjunctions (Sınavın Kalbi) - 5 Soru</button>
+                <div class="acc-content">
+                    <b>Zıtlık:</b> Although (Cümle), Despite (İsim/Ving).<br>
+                    <b>Sebep:</b> Because (Cümle), Due to (İsim).<br>
+                    <b>Sonuç:</b> Therefore, Thus (Bu yüzden).
+                    
+                    <button class="tactic-btn" onclick="toggleTactic(this)">⚠️ ÖSYM Taktikleri</button>
+                    <div class="tactic-content">
+                        <ul>
+                            <li><b>Uyarı:</b> Sınavın EN ÖNEMLİ gramer konusudur. Her sene şaşmaksızın GARANTİ 5 soru gelir.</li>
+                            <li><b>Gramer Taraması:</b> Boşluktan sonra tam bir CÜMLE mi var, yoksa sadece İSİM mi var? <i>Despite</i> ve <i>Due to</i> asla cümle almaz, direkt ele!</li>
+                            <li><b>Zıtlığın Kardeşleri:</b> İlk cümle "bazı insanlar", ikinci cümle "diğerleri (others)" diye başlıyorsa <b>While / Whereas</b> işaretle geç.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acc-item">
+                <button class="acc-header" onclick="toggleAccordion(this)">🔄 6. Gerunds & Infinitives - 1 Soru</button>
+                <div class="acc-content">
+                    <b>Gerund (Ving):</b> enjoy, avoid, mind, risk...<br>
+                    <b>Infinitive (To V1):</b> decide, plan, hope, want...
+                    
+                    <button class="tactic-btn" onclick="toggleTactic(this)">⚠️ ÖSYM Taktikleri</button>
+                    <div class="tactic-content">
+                        <ul>
+                            <li><b>İstatistik:</b> 2016'dan beri her yıl 1 soru olarak düzenli gelir.</li>
+                            <li><b>Edat Kuralı Sektirmez:</b> Boşluktan hemen önce <i>in, of, for, about, at</i> gibi bir edat varsa, tereddütsüz <b>V-ing</b> işaretle (İstisna: to).</li>
+                            <li><b>Pasif Sonrası To:</b> Boşluktan önce edilgen bir fiil varsa (was seen, is believed) boşluğa DAİMA <b>to V1</b> gelir.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acc-item">
+                <button class="acc-header" onclick="toggleAccordion(this)">📊 7. Quantifiers & Pronouns - 1 Soru</button>
+                <div class="acc-content">
+                    <b>Sayılabilen (Plural):</b> Many, a few, few.<br>
+                    <b>Sayılamayan (Uncountable):</b> Much, a little, little.<br>
+                    <b>İkililer:</b> Both, either, neither.
+                    
+                    <button class="tactic-btn" onclick="toggleTactic(this)">⚠️ ÖSYM Taktikleri</button>
+                    <div class="tactic-content">
+                        <ul>
+                            <li><b>İstatistik:</b> 2016'da sorulmaya başlandı ve o günden beri her sene düzenli 1 soru gelir.</li>
+                            <li><b>"2" Sayısını Gördün mü?:</b> Cümlede "two countries, both hands" gibi 2'ye vurgu varsa şıklardaki <i>all, none, some</i> direkt elenir. Cevap <b>both, either</b> veya <b>neither</b> üçlüsünden biridir.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acc-item">
+                <button class="acc-header" onclick="toggleAccordion(this)">✨ 8. Adjectives & Adverbs - 1 Soru</button>
+                <div class="acc-content">
+                    <b>So / Such ... That:</b> O kadar ... ki.<br>
+                    <b>The + Comp., The + Comp.:</b> Ne kadar ..., o kadar ...
+                    
+                    <button class="tactic-btn" onclick="toggleTactic(this)">⚠️ ÖSYM Taktikleri</button>
+                    <div class="tactic-content">
+                        <ul>
+                            <li><b>İstatistik:</b> Bağlaçlarla çok benzer bir yapıdadır ve her yıl 1 soru mutlaka getirir.</li>
+                            <li><b>So vs Such Farkı:</b> Boşluk ile 'that' arasında SADECE sıfat/zarf varsa cevap <b>So</b>'dur. Eğer sıfatın yanında bir İSİM varsa cevap <b>Such</b>'tır.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acc-item">
+                <button class="acc-header" onclick="toggleAccordion(this)">🧩 9. Noun Clauses</button>
+                <div class="acc-content">
+                    <b>That:</b> Cümleyi isme çevirir. <i>(I know that...)</i><br>
+                    <b>Whether / If:</b> Olup olmadığı. <i>(I wonder whether...)</i>
+                    
+                    <button class="tactic-btn" onclick="toggleTactic(this)">⚠️ ÖSYM Taktikleri</button>
+                    <div class="tactic-content">
+                        <ul>
+                            <li><b>Uyarı:</b> Doğrudan "Whoever, whichever" gibi test sorusu (YÖKDİL tarzı) <b>YDT'de G-E-L-M-E-Z</b>. Yüzlerce test çözüp zaman kaybetmeyin. Ancak <b>okuduğunu anlamak ve çeviri yapmak için</b> bu konunun mantığını yalamış yutmuş olmalısınız.</li>
+                            <li><b>Düz Cümle Kuralı:</b> Boşluktan sonra bir Soru Kelimesi (What, Why) varsa, devamı düz cümle (Özne+Yüklem) olmalıdır.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acc-item">
+                <button class="acc-header" onclick="toggleAccordion(this)">⚖️ 10. If Clauses (Koşullar)</button>
+                <div class="acc-content">
+                    <b>Type 1:</b> Muhtemel. <i>(If + Present, Will V1)</i><br>
+                    <b>Type 2:</b> Hayali. <i>(If + Past, Would V1)</i><br>
+                    <b>Type 3:</b> Pişmanlık. <i>(If + Past Perfect, Would have V3)</i>
+                    
+                    <button class="tactic-btn" onclick="toggleTactic(this)">⚠️ ÖSYM Taktikleri</button>
+                    <div class="tactic-content">
+                        <ul>
+                            <li><b>İstatistik:</b> Eskiden pek sorulmazdı ama 2021, 2024 ve 2025 yıllarında soruldu. Son zamanların popüler konusudur.</li>
+                            <li><b>Devrik Yapı (Inversion):</b> YDT "If I had known" demez, <b>"Had I known"</b> der. Soru cümlesi sanmayın, bu bir gizli IF cümlesidir!</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acc-item">
+                <button class="acc-header" onclick="toggleAccordion(this)">📍 11. Prepositions (Edatlar) - 3 Soru</button>
+                <div class="acc-content">
+                    <b>In:</b> Yıllar, aylar. <i>(in 2026)</i><br>
+                    <b>On:</b> Günler. <i>(on Monday)</i><br>
+                    <b>At:</b> Saatler, spesifik noktalar. <i>(at 5 pm)</i>
+                    
+                    <button class="tactic-btn" onclick="toggleTactic(this)">⚠️ ÖSYM Taktikleri</button>
+                    <div class="tactic-content">
+                        <ul>
+                            <li><b>İstatistik:</b> Her yıl istisnasız 3 soru (çok ciddi bir rakam) gelir.</li>
+                            <li><b>Uyarı:</b> Edatların kesin bir çalışma formülü yoktur. Körü körüne ezberlemeyin. Tamamen <b>okuduğunu anlama (çeviri)</b> becerisiyle ve metin içinde görerek çözülür.</li>
+                            <li><b>From ve To İkilisi:</b> Eğer metinde bir değişim, dönüşüm (transition, shift) varsa şıklarda <b>from ... to ...</b> büyük ihtimalle doğru cevaptır.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
         <section id="quizSection" class="tab-panel fade-in">
             <div class="glass-card">
                 <div class="sub-tabs">

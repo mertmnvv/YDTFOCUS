@@ -64,11 +64,11 @@ function getCEFRColor(level) {
 }
 
 function getDisplayLevel(internalLvl) {
-    if (!internalLvl || internalLvl <= 0) return 0; 
-    if (internalLvl === 1) return 1;                
-    if (internalLvl === 2 || internalLvl === 3) return 2; 
-    if (internalLvl === 4) return 3;                
-    if (internalLvl >= 5) return 4;                 
+    if (!internalLvl || internalLvl <= 0) return 0; // Yeni
+    if (internalLvl === 1) return 1;                // 1. Gün
+    if (internalLvl === 2 || internalLvl === 3) return 2; // Pekişen (2 ve 3 gün sonra)
+    if (internalLvl === 4) return 3;                // Akılda Kalan (7 gün)
+    if (internalLvl >= 5) return 4;                 // Usta (14, 30, 45, 60 gün)
 }
 
 function checkAndUpdateStats() {
@@ -555,9 +555,6 @@ function openHeroBank() {
 function closeHeroBank() { document.getElementById('heroBankModal').style.display = 'none'; }
 
 
-// =======================================================================
-// [5] DİĞER AÇIK DÜNYA FONKSİYONLARI (Dashboard, Quiz, Translate)
-// =======================================================================
 function updateDashboard() {
     if(!document.getElementById('statTotalWords')) return;
     checkAndUpdateStats(); 
@@ -587,7 +584,21 @@ function updateDashboard() {
     document.getElementById('statToReview').innerText = toReview;
     document.getElementById('statAccuracy').innerText = "%" + acc;
 
-    const targetPercentage = total === 0 ? 0 : Math.min(100, Math.round((total / 2000) * 100));
+    // --- EKSİK OLAN VE SÜREYİ EKRANA ANINDA GETİREN KOD BURASI ---
+    const timeEl = document.getElementById('statTime');
+    if (timeEl) {
+        timeEl.innerText = ydtStats.dailyMinutes >= 60 
+            ? `${Math.floor(ydtStats.dailyMinutes / 60)} sa ${ydtStats.dailyMinutes % 60} dk` 
+            : `${ydtStats.dailyMinutes} dk`;
+    }
+    // -------------------------------------------------------------
+
+   // HEDEF BARI İÇİN GÜNCEL MATEMATİK
+    let targetPercentage = (total / 2000) * 100;
+    // Eğer 1 kelime bile varsa, test ederken gözükmesi için bar en az %1 dolsun
+    if (total > 0 && targetPercentage < 1) targetPercentage = 1; 
+    if (targetPercentage > 100) targetPercentage = 100;
+    
     document.getElementById('targetCurrent').innerText = total;
     document.getElementById('targetProgressBar').style.width = targetPercentage + "%";
 
@@ -904,7 +915,6 @@ function setupQuiz(pool, count) {
     ['StartScreen', 'QuestionScreen', 'ProgressContainer'].forEach(s => { const el = document.getElementById(prefix + s); if(el) el.style.display = s === 'StartScreen' ? 'none' : 'block'; });
     loadQuest();
 }
-
 function loadQuest() {
     const prefix = ({ "test": "quiz", "archive": "arcQuiz", "phrasal": "phrasalQuiz", "mistake": "mistakeQuiz", "smart": "smartQuiz" })[currentQuizMode] || "quiz";
     if(qIdx >= qSet.length) {
@@ -936,23 +946,42 @@ function loadQuest() {
         b.onclick = () => {
             const allOpts = optsDiv.querySelectorAll('.quiz-opt'); allOpts.forEach(opt => opt.style.pointerEvents = 'none');
             const currentW = q.phrase || q.word; let wordInBank = myWords.find(w => w.word === currentW);
+            
             if(o === ans) {
+                // --- DOĞRU CEVAP VERİLİRSE (Seviye Atlar) ---
                 if(typeof correctSound !== 'undefined') { correctSound.pause(); correctSound.currentTime = 0; correctSound.play().catch(()=>{}); }
                 b.classList.add('correct-ans');
+                
                 if(currentQuizMode === "smart" && wordInBank) {
                     wordInBank.level = (wordInBank.level || 0) + 1;
-                    const intervals = [1, 2, 3, 7, 14, 30]; 
+                    
+                    // YENİ KURAL: 1, 2, 3, 7, 14, 30, 45, 60 gün aralıkları
+                    const intervals = [1, 2, 3, 7, 14, 30, 45, 60]; 
                     const daysToAdd = intervals[Math.min(wordInBank.level - 1, intervals.length - 1)] || 1;
-                    let targetDate = new Date(); targetDate.setDate(targetDate.getDate() + daysToAdd); targetDate.setHours(0,0,0,0); 
+                    
+                    let targetDate = new Date(); 
+                    targetDate.setDate(targetDate.getDate() + daysToAdd); 
+                    targetDate.setHours(0,0,0,0); 
                     wordInBank.nextReview = targetDate.getTime();
                 }
                 if(currentQuizMode === "mistake") wrongIds = wrongIds.filter(id => id !== currentW);
+            
             } else {
+                // --- YANLIŞ CEVAP VERİLİRSE (Usta da olsa en başa döner) ---
                 if(typeof wrongSound !== 'undefined') { wrongSound.pause(); wrongSound.currentTime = 0; wrongSound.play().catch(()=>{}); }
                 b.classList.add('wrong-ans'); allOpts.forEach(opt => { if (opt.dataset.correct === 'true') opt.classList.add('correct-ans'); });
-                if(wordInBank) { wordInBank.wrongCount++; if(currentQuizMode === "smart") { wordInBank.level = Math.max(0, (wordInBank.level || 0) - 2); wordInBank.nextReview = Date.now(); } }
+                
+                if(wordInBank) { 
+                    wordInBank.wrongCount++; 
+                    if(currentQuizMode === "smart") { 
+                        // ACIMASIZ CEZA: Usta (60. gün) olsa bile "Yeni" aşamasına (0) döner ve hemen sorulur.
+                        wordInBank.level = 0; 
+                        wordInBank.nextReview = Date.now(); 
+                    } 
+                }
                 if(!wrongIds.includes(currentW)) wrongIds.push(currentW); 
             }
+            
             localStorage.setItem('ydtWords', JSON.stringify(myWords)); localStorage.setItem('wrongIds', JSON.stringify(wrongIds));
             if(typeof updateDashboard === 'function') updateDashboard();
             setTimeout(() => { qIdx++; loadQuest(); }, 1200);
@@ -1788,6 +1817,18 @@ function showQuestionDetail(ans) {
     document.body.appendChild(modal);
 }
 
+function toggleTactic(btn) {
+    const content = btn.nextElementSibling;
+    if (content.style.display === "none" || content.style.display === "") {
+        content.style.display = "block";
+        btn.innerHTML = "🔽 Taktikleri Gizle";
+        btn.style.background = "rgba(255, 159, 10, 0.25)";
+    } else {
+        content.style.display = "none";
+        btn.innerHTML = "⚠️ YDT Nasıl Sorar? (ÖSYM Taktikleri)";
+        btn.style.background = "rgba(255, 159, 10, 0.1)";
+    }
+}
 window.onload = () => { 
     if(typeof renderWords === 'function') renderWords(); 
     if(typeof updateDashboard === 'function') updateDashboard(); 
