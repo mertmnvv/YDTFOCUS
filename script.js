@@ -64,11 +64,11 @@ function getCEFRColor(level) {
 }
 
 function getDisplayLevel(internalLvl) {
-    if (!internalLvl || internalLvl <= 0) return 0; // Yeni
-    if (internalLvl === 1) return 1;                // 1. Gün
-    if (internalLvl === 2 || internalLvl === 3) return 2; // Pekişen (2 ve 3 gün sonra)
-    if (internalLvl === 4) return 3;                // Akılda Kalan (7 gün)
-    if (internalLvl >= 5) return 4;                 // Usta (14, 30, 45, 60 gün)
+    if (!internalLvl || internalLvl <= 0) return 0;
+    if (internalLvl === 1) return 1;                
+    if (internalLvl === 2 || internalLvl === 3) return 2; 
+    if (internalLvl === 4) return 3;                
+    if (internalLvl >= 5) return 4;                 
 }
 
 function checkAndUpdateStats() {
@@ -144,7 +144,6 @@ async function generateAIText() {
         const quizArea = document.getElementById('aiReadingQuizSection');
         if(quizArea) quizArea.style.display = 'block';
 
-        // EKSİK OLAN KISIM: YENİ METİN ÜRETİLİNCE QUİZİ SIFIRLA
         const quizBtn = document.getElementById('btnCreateReadingQuiz');
         const quizList = document.getElementById('aiReadingQuizList');
         if (quizBtn) quizBtn.style.display = 'inline-block';
@@ -194,7 +193,7 @@ function processAnalysis() {
                 const isSaved = myWords.some(w => w.word.toLowerCase() === cleanWord);
                 if (isSaved) span.classList.add('is-saved'); 
                 else {
-                    const archiveItem = ydtArchiveData.find(w => (w.word || "").toLowerCase() === cleanWord);
+                    const archiveItem = typeof ydtArchiveData !== 'undefined' && ydtArchiveData.find(w => (w.word || "").toLowerCase() === cleanWord);
                     if (archiveItem) {
                         const lvl = archiveItem.level;
                         if (!lvl || lvl.startsWith('B') || lvl.startsWith('C')) span.classList.add('is-data'); 
@@ -210,9 +209,8 @@ function processAnalysis() {
 }
 
 // =======================================================================
-// [4] ZERO TO HERO MOTORU (YOL HARİTASI, DERSLER, KİLİTLER, BOSS)
+// [4] ZERO TO HERO MOTORU (YOL HARİTASI VE DERSLER)
 // =======================================================================
-
 function renderHeroRoadmap() {
     const levels = ['A1', 'A2', 'B1', 'B2', 'C1'];
     let totalRequired = 0; let totalCompleted = 0;
@@ -267,11 +265,16 @@ async function startHeroLevel(level) {
 
     if(typeof switchTab === 'function') switchTab('heroLesson');
     
+    // GÖRESELLERİ TEMİZLE VE YÜKLEME EKRANINI AÇ
     document.getElementById('heroLessonContent').style.display = 'none';
     document.getElementById('heroMiniQuizArea').style.display = 'none';
     document.getElementById('heroFinalExamArea').style.display = 'none';
     document.getElementById('heroLessonActions').style.display = 'none';
     document.getElementById('heroLessonLoading').style.display = 'block';
+    
+    // YENİ: SIFIRLAMA KUTUSUNU HER DERSTE GİZLE
+    const restartBox = document.getElementById('heroRestartContainer');
+    if(restartBox) restartBox.style.display = 'none';
 
     const needsBossFight = stats.completed >= stats.required && (!stats.next || !heroStats[stats.next].unlocked);
 
@@ -288,40 +291,26 @@ async function startHeroLevel(level) {
     
     currentHeroWords = pool.length > 0 
         ? pool.sort(() => 0.5 - Math.random()).slice(0, 5)
-        : [{word: "learn", meaning: "öğrenmek"}, {word: "easy", meaning: "kolay"}];
+        : [{word: "challenge", meaning: "zorluk"}, {word: "improve", meaning: "geliştirmek"}];
 
     const wordListStr = currentHeroWords.map(w => w.word).join(", ");
     const meaningListStr = currentHeroWords.map(w => `${w.word} (${w.meaning})`).join(", ");
 
     const progressRatio = stats.completed / stats.required;
-    let stageInstruction = "";
-
-    if (progressRatio < 0.35) {
-        stageInstruction = "EARLY STAGE: The student just started this level. Keep sentences short and clear. Use the simplest forms of this level's grammar.";
-    } else if (progressRatio < 0.70) {
-        stageInstruction = "MIDDLE STAGE: The student is getting used to this level. Combine some sentences naturally. Standard difficulty.";
-    } else {
-        stageInstruction = "LATE STAGE: The student is preparing for the Boss Fight. Make the text noticeably longer and more challenging. Give a slight preview of the next level's difficulty.";
-    }
+    let stageInstruction = progressRatio < 0.35 ? "EARLY STAGE: Use very simple forms." 
+                       : progressRatio < 0.70 ? "MIDDLE STAGE: Standard difficulty for this level." 
+                       : "LATE STAGE: Make it challenging. Preview next level's grammar slightly.";
 
     let levelInstruction = "";
-    if (level === "A1") {
-        levelInstruction = "Level Rule: Strictly use 'to be' verbs (am/is/are/was/were) and simple present/past. Absolute beginner vocabulary. Write like you are explaining to a child.";
-    } else if (level === "A2") {
-        levelInstruction = "Level Rule: Use basic action verbs, present continuous, and simple story-telling grammar. Introduce basic prepositions.";
-    } else if (level === "B1") {
-        levelInstruction = "Level Rule: Focus on intermediate transitions (however, therefore, although, because, while). Introduce present perfect tense and basic passive voice.";
-    } else if (level === "B2") {
-        levelInstruction = "Level Rule: Focus on upper-intermediate YDT/YDS format. Heavily use relative clauses (which, who, that, whose) and advanced connectors (furthermore, moreover, despite). Formal academic tone.";
-    } else {
-        levelInstruction = "Level Rule: Highly advanced academic English. TOEFL/IELTS style complexity, inverted sentences, participle clauses, and heavy inferences. Sound like a university professor.";
-    }
-
-    const finalDifficultyInstruction = `CRITICAL RULES: ${levelInstruction} AND ${stageInstruction}`;
+    if (level === "A1") levelInstruction = "Rule: Strictly use 'to be' verbs (am/is/are/was/were). Absolute beginner. Explain like to a child.";
+    else if (level === "A2") levelInstruction = "Rule: Basic action verbs, present continuous. Simple story-telling.";
+    else if (level === "B1") levelInstruction = "Rule: Use transitions (however, therefore). Basic passive voice.";
+    else if (level === "B2") levelInstruction = "Rule: Upper-intermediate. Relative clauses (which, who) and advanced connectors.";
+    else levelInstruction = "Rule: Highly advanced academic English. TOEFL/IELTS style complexity.";
 
     const prompt = `You are the 'Zero to Hero' English Teacher. Level: ${level} CEFR. Target Vocabulary: ${wordListStr}.
-    Task: Write an engaging reading paragraph (4-5 sentences) using ALL the target words. Write a short 3-line dialogue. Add a "Vocabulary Review" section at the end with these exact Turkish meanings: ${meaningListStr}. 
-    ${finalDifficultyInstruction} No markdown asterisks.`;
+    Task: Write an engaging paragraph (4-5 sentences) using ALL target words. Write a 3-line dialogue. Add a "Vocabulary Review" section at the end with these exact Turkish meanings: ${meaningListStr}. 
+    CRITICAL RULES: ${levelInstruction} AND ${stageInstruction}. No markdown asterisks.`;
 
     const GROQ_API_KEY = "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"; 
 
@@ -369,7 +358,6 @@ function renderHeroTextAnalysis(rawText, container, level) {
 
             if (cleanWord.length >= 2) {
                 span.className = "hover-word";
-                
                 if ((level === "A1" || level === "A2") && toBeVerbs.includes(cleanWord)) {
                     span.style.color = "#0a84ff"; span.style.fontWeight = "900"; span.style.borderBottom = "2px solid #0a84ff"; span.style.background = "rgba(10, 132, 255, 0.1)";
                 } else if (level === "B1" && b1Transitions.includes(cleanWord)) {
@@ -381,7 +369,6 @@ function renderHeroTextAnalysis(rawText, container, level) {
                 } else if ((level === "B1" || level === "B2" || level === "C1") && typeof ydtArchiveData !== 'undefined' && ydtArchiveData.some(w => (w.word || "").toLowerCase() === cleanWord)) {
                     span.classList.add('is-data'); 
                 }
-
                 span.onclick = (e) => { e.stopPropagation(); if(typeof fetchDetails === 'function') fetchDetails(cleanWord); };
                 if(typeof setupTooltip === 'function') setupTooltip(span, cleanWord);
             }
@@ -399,12 +386,10 @@ function buildHeroMiniQuiz() {
     questionBox.innerHTML = "";
     document.getElementById('heroLessonActions').style.display = 'none';
 
-    const wrongMeanings = ydtArchiveData.map(w => w.meaning).sort(() => 0.5 - Math.random()).slice(0, 20);
+    const wrongMeanings = typeof ydtArchiveData !== 'undefined' ? ydtArchiveData.map(w => w.meaning).sort(() => 0.5 - Math.random()).slice(0, 20) : ["Yanlış 1", "Yanlış 2", "Yanlış 3"];
 
     currentHeroWords.forEach((wordObj, index) => {
-        let options = [wordObj.meaning, wrongMeanings[index*2], wrongMeanings[index*2 + 1]];
-        options = options.sort(() => 0.5 - Math.random()); 
-
+        let options = [wordObj.meaning, wrongMeanings[index*2], wrongMeanings[index*2 + 1]].sort(() => 0.5 - Math.random());
         let html = `
             <div class="quiz-card" id="mini-q-${index}" style="padding:15px; border-radius:15px;">
                 <p style="font-weight:bold; font-size:1.1rem; margin-bottom:10px; color:#fff;">${index+1}. "${wordObj.word}" kelimesinin anlamı nedir?</p>
@@ -417,41 +402,50 @@ function buildHeroMiniQuiz() {
     });
 }
 
+// =======================================================================
+// [5] ZERO TO HERO MOLA (SIFIRLAMA) VE TEST KONTROL MOTORU
+// =======================================================================
+
 function checkHeroMiniQuiz(btn, selected, correct, index) {
     const card = document.getElementById(`mini-q-${index}`);
     const options = card.querySelectorAll('.quiz-opt');
-    options.forEach(opt => opt.style.pointerEvents = 'none'); 
+    options.forEach(opt => opt.style.pointerEvents = 'none');
 
-    if (selected === correct) {
-        btn.classList.add('correct-ans'); currentHeroScore++;
+    if (selected === correct) { 
+        btn.classList.add('correct-ans'); 
+        currentHeroScore++; 
     } else {
         btn.classList.add('wrong-ans');
         options.forEach(opt => { if(opt.innerText === correct) opt.classList.add('correct-ans'); });
     }
 
-    const answeredCount = document.querySelectorAll('#miniQuizQuestions .correct-ans').length + document.querySelectorAll('#miniQuizQuestions .wrong-ans').length;
-    
-    if (answeredCount === currentHeroWords.length) {
-        if (currentHeroScore === currentHeroWords.length) {
-            document.getElementById('heroLessonActions').style.display = 'block';
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-        } else {
-            alert(`Testi geçemedin! (${currentHeroScore}/${currentHeroWords.length}) Doğrulara iyi bak, test 3 saniye içinde yeniden başlıyor.`);
-            setTimeout(() => { document.getElementById('heroLessonActions').style.display = 'none'; buildHeroMiniQuiz(); }, 3000); 
-        }
+    const totalQ = currentHeroWords.length;
+    const wrongCount = document.querySelectorAll('#miniQuizQuestions .wrong-ans').length;
+    const answeredCount = document.querySelectorAll('#miniQuizQuestions .correct-ans').length + wrongCount;
+    const restartContainer = document.getElementById('heroRestartContainer');
+
+    // MOLA KUTUSU AÇILMA ŞARTI:
+    // 1. Hatalar %50'yi geçtiyse (Örn: 5 soruda 3 hata)
+    // VEYA 2. Sınav bittiyse ama tam puan (0 hata) alınamadıysa
+    if (restartContainer && (wrongCount >= Math.ceil(totalQ / 2) || (answeredCount === totalQ && currentHeroScore < totalQ))) {
+        restartContainer.style.display = 'block';
+        restartContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // DERSİ TAMAMLA BUTONU AÇILMA ŞARTI:
+    // Tüm sorular bittiyse VE hepsi doğruysa
+    if (answeredCount === totalQ && currentHeroScore === totalQ) {
+        const actionsBox = document.getElementById('heroLessonActions');
+        actionsBox.style.display = 'block';
+        if(restartContainer) restartContainer.style.display = 'none';
+        actionsBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 }
 
 function completeHeroLesson() {
-    if (!currentHeroLevel || !currentHeroWords.length) return;
-
     currentHeroWords.forEach(w => {
-        const alreadyInHero = heroWords.some(hw => hw.word.toLowerCase() === w.word.toLowerCase());
-        if (!alreadyInHero) {
-            heroWords.push({
-                id: "hero_" + Date.now() + Math.random(),
-                word: w.word, meaning: w.meaning, level: currentHeroLevel, addedDate: Date.now()
-            });
+        if (!heroWords.some(hw => hw.word.toLowerCase() === w.word.toLowerCase())) {
+            heroWords.push({ id: "hero_" + Date.now() + Math.random(), word: w.word, meaning: w.meaning, level: currentHeroLevel, addedDate: Date.now() });
         }
     });
 
@@ -459,10 +453,10 @@ function completeHeroLesson() {
     let stats = heroStats[currentHeroLevel];
     stats.completed += 1;
     localStorage.setItem('heroStats', JSON.stringify(heroStats));
-    
-    if (stats.completed >= stats.required) alert(`🎉 Harika! ${currentHeroLevel} derslerini bitirdin. Şimdi Final Sınavı (Boss Fight) zamanı!`);
-    else alert(`✅ Ders tamamlandı! ${currentHeroWords.length} kelime Hero Çantasına eklendi.`);
-    
+
+    if (stats.completed >= stats.required) alert(`🎉 Harika! ${currentHeroLevel} derslerini bitirdin. Şimdi Final Sınavı zamanı!`);
+    else alert(`✅ Ders tamamlandı! Öğrendiğin kelimeler Hero Çantasına eklendi.`);
+
     if (typeof switchTab === 'function') switchTab('hero');
     renderHeroRoadmap();
 }
@@ -473,14 +467,19 @@ function buildHeroFinalExam(level) {
     const questionBox = document.getElementById('finalExamQuestions');
     examArea.style.display = 'block';
     
+    // Boss Fight başlangıcında mola kutusunu gizle
+    const restartBox = document.getElementById('heroRestartContainer');
+    if(restartBox) restartBox.style.display = 'none';
+    
     const learnedWords = heroWords.filter(w => w.level === level);
     if(learnedWords.length < 10) {
-        alert("Sınav için çantanızda yeterli kelime yok. Lütfen dersleri tamamlayın.");
-        switchTab('hero'); return;
+        alert("Sınav için Hero çantanızda yeterli kelime yok!");
+        if (typeof switchTab === 'function') switchTab('hero'); 
+        return;
     }
 
     heroFinalQuestions = learnedWords.sort(() => 0.5 - Math.random()).slice(0, 10);
-    const wrongMeanings = ydtArchiveData.map(w => w.meaning).sort(() => 0.5 - Math.random()).slice(0, 40);
+    const wrongMeanings = typeof ydtArchiveData !== 'undefined' ? ydtArchiveData.map(w => w.meaning).sort(() => 0.5 - Math.random()).slice(0, 40) : ["Yanlış", "Yanlış", "Yanlış"];
 
     let html = `
         <div style="text-align:center; margin-bottom:25px; padding: 20px; background: rgba(191, 90, 242, 0.1); border: 1px solid rgba(191, 90, 242, 0.3); border-radius: 20px;">
@@ -490,9 +489,7 @@ function buildHeroFinalExam(level) {
     `;
 
     heroFinalQuestions.forEach((wordObj, index) => {
-        let options = [wordObj.meaning, wrongMeanings[index*3], wrongMeanings[index*3 + 1], wrongMeanings[index*3 + 2]];
-        options = options.sort(() => 0.5 - Math.random());
-
+        let options = [wordObj.meaning, wrongMeanings[index*3], wrongMeanings[index*3 + 1], wrongMeanings[index*3 + 2]].sort(() => 0.5 - Math.random());
         html += `
             <div class="quiz-card" id="final-q-${index}" style="border-left: 4px solid #bf5af2;">
                 <p style="font-weight:bold; font-size:1.15rem; margin-bottom:15px; color:#fff;">
@@ -504,7 +501,6 @@ function buildHeroFinalExam(level) {
             </div>
         `;
     });
-    
     questionBox.innerHTML = html;
 }
 
@@ -513,30 +509,52 @@ function checkHeroFinalExam(btn, selected, correct, index) {
     const options = card.querySelectorAll('.quiz-opt');
     options.forEach(opt => opt.style.pointerEvents = 'none');
 
-    if (selected === correct) { btn.classList.add('correct-ans'); heroFinalScore++; } 
-    else {
+    if (selected === correct) { 
+        btn.classList.add('correct-ans'); 
+        heroFinalScore++; 
+    } else {
         btn.classList.add('wrong-ans');
         options.forEach(opt => { if(opt.innerText === correct) opt.classList.add('correct-ans'); });
     }
 
-    const answeredCount = document.querySelectorAll('#finalExamQuestions .correct-ans').length + document.querySelectorAll('#finalExamQuestions .wrong-ans').length;
-    
-    if (answeredCount === heroFinalQuestions.length) {
+    const totalQ = heroFinalQuestions.length;
+    const wrongCount = document.querySelectorAll('#finalExamQuestions .wrong-ans').length;
+    const answeredCount = document.querySelectorAll('#finalExamQuestions .correct-ans').length + wrongCount;
+    const restartContainer = document.getElementById('heroRestartContainer');
+
+    // Boss Fight'ta geçme notu 8/10'dur. Bu yüzden 3 yanlış yapıldığı an mola kutusu açılır.
+    if (restartContainer && (wrongCount >= 3 || (answeredCount === totalQ && heroFinalScore < 8))) {
+        restartContainer.style.display = 'block';
+        restartContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Boss Fight tamamlandıysa ve puan 8 veya üzeriyse!
+    if (answeredCount === totalQ && heroFinalScore >= 8) {
         setTimeout(() => {
-            if (heroFinalScore >= 8) {
-                alert(`🏆 MUHTEŞEM! ${heroFinalScore}/10 yaptın. Yeni seviyenin kilidi kırıldı!`);
-                let stats = heroStats[currentHeroLevel];
-                if (stats.next && heroStats[stats.next]) {
-                    heroStats[stats.next].unlocked = true;
-                    localStorage.setItem('heroStats', JSON.stringify(heroStats));
-                }
-            } else {
-                alert(`💥 Sınavı Geçemedin! (${heroFinalScore}/10). En az 8 doğru yapmalısın.`);
+            alert(`🏆 MUHTEŞEM! ${heroFinalScore}/10 yaptın. Yeni seviyenin kilidi kırıldı!`);
+            let stats = heroStats[currentHeroLevel];
+            if (stats.next && heroStats[stats.next]) {
+                heroStats[stats.next].unlocked = true;
+                localStorage.setItem('heroStats', JSON.stringify(heroStats));
             }
             if (typeof switchTab === 'function') switchTab('hero');
             renderHeroRoadmap();
-        }, 1500);
+        }, 1000);
     }
+}
+
+function restartZeroToHeroExam() {
+    // 1. Mola kutusunu tekrar gizle
+    const restartContainer = document.getElementById('heroRestartContainer');
+    if(restartContainer) restartContainer.style.display = 'none';
+    
+    // 2. Dersi / Sınavı sıfırdan yeniden kur
+    if (currentHeroLevel) {
+        startHeroLevel(currentHeroLevel);
+    }
+    
+    // 3. Kullanıcıyı sayfanın başına taşı
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function openHeroBank() {
@@ -544,7 +562,7 @@ function openHeroBank() {
     if(!listArea) return;
 
     if (!heroWords || heroWords.length === 0) {
-        listArea.innerHTML = `<div style="text-align:center; padding:40px 20px; color:var(--text-muted);"><div style="font-size:3rem; margin-bottom:10px;">🎒</div><p>Çantan şu an boş. Dersleri tamamladıkça öğrendiğin kelimeler burada birikecek!</p></div>`;
+        listArea.innerHTML = `<div style="text-align:center; padding:40px 20px; color:var(--text-muted);"><div style="font-size:3rem; margin-bottom:10px;">🎒</div><p>Çantan şu an boş. Dersleri tamamladıkça öğreneceksin!</p></div>`;
     } else {
         listArea.innerHTML = [...heroWords].reverse().map(w => `
             <div class="bento-list-item" style="border-left: 4px solid var(--accent);">
@@ -561,6 +579,10 @@ function openHeroBank() {
 
 function closeHeroBank() { document.getElementById('heroBankModal').style.display = 'none'; }
 
+
+// =======================================================================
+// [6] DASHBOARD, İSTATİSTİK VE KELİME BANKASI (GLOBAL)
+// =======================================================================
 
 function updateDashboard() {
     if(!document.getElementById('statTotalWords')) return;
@@ -591,18 +613,15 @@ function updateDashboard() {
     document.getElementById('statToReview').innerText = toReview;
     document.getElementById('statAccuracy').innerText = "%" + acc;
 
-    // --- EKSİK OLAN VE SÜREYİ EKRANA ANINDA GETİREN KOD BURASI ---
     const timeEl = document.getElementById('statTime');
     if (timeEl) {
         timeEl.innerText = ydtStats.dailyMinutes >= 60 
             ? `${Math.floor(ydtStats.dailyMinutes / 60)} sa ${ydtStats.dailyMinutes % 60} dk` 
             : `${ydtStats.dailyMinutes} dk`;
     }
-    // -------------------------------------------------------------
 
-   // HEDEF BARI İÇİN GÜNCEL MATEMATİK
+   // HEDEF BARI
     let targetPercentage = (total / 2000) * 100;
-    // Eğer 1 kelime bile varsa, test ederken gözükmesi için bar en az %1 dolsun
     if (total > 0 && targetPercentage < 1) targetPercentage = 1; 
     if (targetPercentage > 100) targetPercentage = 100;
     
@@ -1076,7 +1095,6 @@ async function generateAIQuiz() {
     quizList.innerHTML = "<p style='text-align:center; color:var(--accent); padding:20px;'>⏳ AI metni analiz edip soruları hazırlıyor (10-15 sn sürebilir)...</p>"; 
     quizList.scrollIntoView({ behavior: 'smooth', block: 'center' });
     
-    // PROMPT SADELEŞTİRİLDİ: Sadece JSON objesi istiyoruz.
     const prompt = `You are a strict JSON generator. Based on the text below, create exactly 3 multiple-choice questions. 
     CRITICAL RULES:
     1. The output MUST be a valid JSON object.
@@ -1095,7 +1113,6 @@ async function generateAIQuiz() {
                 model: "llama-3.1-8b-instant", 
                 messages: [{ role: "user", content: prompt }], 
                 temperature: 0.1,
-                // İŞTE SİHİRLİ KOD BURASI: Yapay zekanın sohbet etmesini engeller, sadece kod üretmeye zorlar!
                 response_format: { type: "json_object" } 
             }) 
         });
@@ -1104,8 +1121,6 @@ async function generateAIQuiz() {
         
         const data = await response.json(); 
         const rawContent = data.choices[0].message.content; 
-        
-        // Artık cımbızlamaya gerek yok, çünkü API bize %100 temiz bir JSON göndermek zorunda.
         const parsedData = JSON.parse(rawContent);
         
         if (!parsedData.questions || !Array.isArray(parsedData.questions)) {
@@ -1126,7 +1141,7 @@ async function generateAIQuiz() {
         quizBtn.style.display = 'inline-block'; 
     }
 }
-// 1. SORULARI EKRANA ÇİZEN FONKSİYON (Silinen kısım)
+
 function renderReadingQuizFinal(questions) { 
     const quizList = document.getElementById('aiReadingQuizList'); 
     let html = ""; 
@@ -1147,13 +1162,11 @@ function renderReadingQuizFinal(questions) {
     quizList.innerHTML = html; 
 }
 
-// 1. CEVAP KONTROL FONKSİYONU (Güncellendi)
 function checkReadingAnswer(btn, qIndex, selectedLetter) {
     const question = currentReadingQuestions[qIndex]; 
     const card = document.getElementById(`ai-q-card-${qIndex}`); 
     const options = card.querySelectorAll('.quiz-opt');
     
-    // Tıklandıktan sonra diğer şıkları kilitle
     options.forEach(opt => opt.style.pointerEvents = 'none');
     
     if (selectedLetter === question.correct.toLowerCase()) { 
@@ -1164,18 +1177,14 @@ function checkReadingAnswer(btn, qIndex, selectedLetter) {
         
         const allSentences = document.querySelectorAll('.focus-sentence');
         if (allSentences[question.evidenceIndex]) {
-            // Önceki tüm vurguları temizle
             allSentences.forEach(s => { 
                 s.style.background = "none"; 
                 s.style.borderBottom = "none"; 
             }); 
             
             const evidence = allSentences[question.evidenceIndex];
-            
-            // SADECE ALTINI ÇİZ (Arka planı kırmızı yapma)
             evidence.style.borderBottom = "2px dashed var(--error)"; 
             
-            // "HATAMI GÖSTER" BUTONUNU EKLE (Eğer daha önce eklenmediyse)
             let btnContainer = card.querySelector('.mistake-btn-container');
             if (!btnContainer) {
                 btnContainer = document.createElement('div');
@@ -1189,38 +1198,32 @@ function checkReadingAnswer(btn, qIndex, selectedLetter) {
             }
         }
         
-        // Doğru cevabı yeşil yap
         options.forEach(opt => { 
             if (opt.innerText.toLowerCase().startsWith(question.correct.toLowerCase() + ")")) opt.classList.add('correct-ans'); 
         });
     }
 }
 
-// 2. YENİ EKLENEN FONKSİYON: Butona Basılınca Kırmızı Yapan Kod
 function showMistakeInText(evidenceIndex, btnElement) {
     const allSentences = document.querySelectorAll('.focus-sentence');
     const evidence = allSentences[evidenceIndex];
     
     if (evidence) {
-        // Metni kırmızıyla vurgula ve ekranda o kısma kaydır
         evidence.style.background = "rgba(255, 69, 58, 0.3)"; 
         evidence.style.borderBottom = "2px solid var(--error)"; 
         evidence.scrollIntoView({ behavior: 'smooth', block: 'center' });
         
-        // Animasyonlu bir şekilde kırmızılığı hafiflet
         setTimeout(() => { 
             evidence.style.transition = "all 2s"; 
             evidence.style.background = "rgba(255, 69, 58, 0.1)"; 
         }, 3000);
         
-        // Butonu "Gösterildi" olarak değiştir ve tıklandıktan sonra kapat
         btnElement.innerText = "👀 Metinde İşaretlendi";
         btnElement.style.opacity = "0.5";
         btnElement.style.pointerEvents = "none";
     }
 }
 
-// 3. DOĞRU BİLİNCE ÇIKAN ANİMASYON
 function createConfetti(target) { 
     for(let i=0; i<10; i++) { 
         const confetti = document.createElement('div'); 
@@ -1241,330 +1244,6 @@ function createConfetti(target) {
 }
 
 // =======================================================================
-// [6] HERO PATH ENGINE (TAM ENTEGRE - ZERO TO HERO)
-// =======================================================================
-
-function renderHeroRoadmap() {
-    const levels = ['A1', 'A2', 'B1', 'B2', 'C1'];
-    let totalRequired = 0; let totalCompleted = 0;
-
-    levels.forEach(lvl => {
-        const stats = heroStats[lvl];
-        const node = document.getElementById('node' + lvl);
-        if(!stats) return;
-
-        totalRequired += stats.required; 
-        totalCompleted += Math.min(stats.completed, stats.required);
-
-        if(node) {
-            const actionBtn = node.querySelector('.node-action');
-            if (stats.unlocked) {
-                node.classList.remove('locked'); node.classList.add('unlocked');
-                if(actionBtn) {
-                    actionBtn.classList.remove('locked-text');
-                    const needsBossFight = stats.completed >= stats.required && (!stats.next || !heroStats[stats.next].unlocked);
-                    const isFullyCompleted = stats.completed >= stats.required && stats.next && heroStats[stats.next].unlocked;
-
-                    if (needsBossFight) {
-                        actionBtn.innerHTML = `🏆 Sınava Gir (Boss Fight)`;
-                        actionBtn.style.color = "#bf5af2"; 
-                    } else if (isFullyCompleted) {
-                        actionBtn.innerHTML = `✅ Tamamlandı (${stats.completed}/${stats.required})`;
-                        actionBtn.style.color = "var(--primary)"; 
-                    } else {
-                        actionBtn.innerHTML = `Dersi Başlat ▶ (${stats.completed}/${stats.required})`;
-                        actionBtn.style.color = "var(--accent)"; 
-                    }
-                }
-            } else {
-                node.classList.remove('unlocked'); node.classList.add('locked');
-                if(actionBtn) actionBtn.innerHTML = "🔒 Kilitli";
-            }
-        }
-    });
-
-    const percent = totalRequired === 0 ? 0 : Math.round((totalCompleted / totalRequired) * 100);
-    const bar = document.getElementById('heroOverallBar');
-    const pctText = document.getElementById('heroOverallPercent');
-    if(bar) bar.style.width = percent + "%";
-    if(pctText) pctText.innerText = "%" + percent;
-}
-
-async function startHeroLevel(level) {
-    const stats = heroStats[level];
-    currentHeroLevel = level;
-
-    if (!stats.unlocked) { alert("Bu seviye kilitli!"); return; }
-
-    if(typeof switchTab === 'function') switchTab('heroLesson');
-    
-    document.getElementById('heroLessonContent').style.display = 'none';
-    document.getElementById('heroMiniQuizArea').style.display = 'none';
-    document.getElementById('heroFinalExamArea').style.display = 'none';
-    document.getElementById('heroLessonActions').style.display = 'none';
-    document.getElementById('heroLessonLoading').style.display = 'block';
-
-    const needsBossFight = stats.completed >= stats.required && (!stats.next || !heroStats[stats.next].unlocked);
-    if (needsBossFight) {
-        document.getElementById('heroLessonTitle').innerText = `🏆 ${level} Final Sınavı`;
-        document.getElementById('heroLessonLoading').style.display = 'none';
-        buildHeroFinalExam(level);
-        return; 
-    }
-
-    document.getElementById('heroLessonTitle').innerText = `Level: ${level} (Ders ${stats.completed + 1}/${stats.required})`;
-    const levelChar = level.charAt(0); 
-    let pool = typeof ydtArchiveData !== 'undefined' ? ydtArchiveData.filter(w => (w.level || "").startsWith(levelChar)) : [];
-    
-    currentHeroWords = pool.length > 0 
-        ? pool.sort(() => 0.5 - Math.random()).slice(0, 5)
-        : [{word: "challenge", meaning: "zorluk"}, {word: "improve", meaning: "geliştirmek"}];
-
-    const wordListStr = currentHeroWords.map(w => w.word).join(", ");
-    const meaningListStr = currentHeroWords.map(w => `${w.word} (${w.meaning})`).join(", ");
-
-    const progressRatio = stats.completed / stats.required;
-    let stageInstruction = progressRatio < 0.35 ? "EARLY STAGE: Use very simple forms." 
-                       : progressRatio < 0.70 ? "MIDDLE STAGE: Standard difficulty for this level." 
-                       : "LATE STAGE: Make it challenging. Preview next level's grammar slightly.";
-
-    let levelInstruction = "";
-    if (level === "A1") levelInstruction = "Rule: Strictly use 'to be' verbs (am/is/are/was/were). Absolute beginner. Explain like to a child.";
-    else if (level === "A2") levelInstruction = "Rule: Basic action verbs, present continuous. Simple story-telling.";
-    else if (level === "B1") levelInstruction = "Rule: Use transitions (however, therefore). Basic passive voice.";
-    else if (level === "B2") levelInstruction = "Rule: Upper-intermediate. Relative clauses (which, who) and advanced connectors.";
-    else levelInstruction = "Rule: Highly advanced academic English. TOEFL/IELTS style complexity.";
-
-    const prompt = `You are the 'Zero to Hero' English Teacher. Level: ${level} CEFR. Target Vocabulary: ${wordListStr}.
-    Task: Write an engaging paragraph (4-5 sentences) using ALL target words. Write a 3-line dialogue. Add a "Vocabulary Review" section at the end with these exact Turkish meanings: ${meaningListStr}. 
-    CRITICAL RULES: ${levelInstruction} AND ${stageInstruction}. No markdown asterisks.`;
-
-    const GROQ_API_KEY = "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"; 
-
-    try {
-        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-            method: "POST", headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ model: "llama-3.1-8b-instant", messages: [{ role: "user", content: prompt }], temperature: 0.55, max_tokens: 800 })
-        });
-        if (!response.ok) throw new Error("API Bağlantı Hatası");
-
-        const data = await response.json();
-        document.getElementById('heroLessonLoading').style.display = 'none';
-        const contentArea = document.getElementById('heroLessonContent');
-        contentArea.style.display = 'block';
-        
-        renderHeroTextAnalysis(data.choices[0].message.content.trim(), contentArea, level);
-        buildHeroMiniQuiz();
-
-    } catch (error) {
-        document.getElementById('heroLessonLoading').style.display = 'none';
-        document.getElementById('heroLessonContent').style.display = 'block';
-        document.getElementById('heroLessonContent').innerHTML = `<p style="color:var(--error);">Bağlantı hatası oluştu. Lütfen tekrar deneyin.</p>`;
-    }
-}
-
-function renderHeroTextAnalysis(rawText, container, level) {
-    container.innerHTML = ""; 
-    const paragraphs = rawText.split('\n');
-    const toBeVerbs = ["am", "is", "are", "was", "were"];
-    const b1Transitions = ["however", "therefore", "although", "because", "while", "but", "so"];
-    const b2Relatives = ["which", "who", "whom", "whose", "furthermore", "moreover", "despite", "whereas"];
-
-    paragraphs.forEach(paraText => {
-        if(!paraText.trim()) return;
-        const pElement = document.createElement('p');
-        pElement.style.marginBottom = "15px";
-
-        const tokens = paraText.split(/(\s+)/);
-        tokens.forEach(word => {
-            if (!word.trim()) { pElement.appendChild(document.createTextNode(word)); return; }
-
-            let cleanWord = word.replace(/[^\p{L}]/gu, "").toLowerCase().trim();
-            const span = document.createElement('span');
-            span.innerText = word;
-
-            if (cleanWord.length >= 2) {
-                span.className = "hover-word";
-                
-                if ((level === "A1" || level === "A2") && toBeVerbs.includes(cleanWord)) {
-                    span.style.color = "#0a84ff"; span.style.fontWeight = "900"; span.style.borderBottom = "2px solid #0a84ff"; span.style.background = "rgba(10, 132, 255, 0.1)";
-                } else if (level === "B1" && b1Transitions.includes(cleanWord)) {
-                    span.style.color = "#ff9f0a"; span.style.fontWeight = "800"; span.style.borderBottom = "2px dashed #ff9f0a"; span.style.background = "rgba(255, 159, 10, 0.1)";
-                } else if (level === "B2" && b2Relatives.includes(cleanWord)) {
-                    span.style.color = "#ff375f"; span.style.fontWeight = "800"; span.style.borderBottom = "2px dashed #ff375f"; span.style.background = "rgba(255, 55, 95, 0.1)";
-                } else if (heroWords.some(hw => hw.word.toLowerCase() === cleanWord)) {
-                    span.style.color = "var(--primary)"; span.style.fontWeight = "bold";
-                } else if ((level === "B1" || level === "B2" || level === "C1") && typeof ydtArchiveData !== 'undefined' && ydtArchiveData.some(w => (w.word || "").toLowerCase() === cleanWord)) {
-                    span.classList.add('is-data'); 
-                }
-                span.onclick = (e) => { e.stopPropagation(); if(typeof fetchDetails === 'function') fetchDetails(cleanWord); };
-                if(typeof setupTooltip === 'function') setupTooltip(span, cleanWord);
-            }
-            pElement.appendChild(span);
-        });
-        container.appendChild(pElement);
-    });
-}
-
-function buildHeroMiniQuiz() {
-    currentHeroScore = 0;
-    const quizArea = document.getElementById('heroMiniQuizArea');
-    const questionBox = document.getElementById('miniQuizQuestions');
-    quizArea.style.display = 'block';
-    questionBox.innerHTML = "";
-    document.getElementById('heroLessonActions').style.display = 'none';
-
-    const wrongMeanings = typeof ydtArchiveData !== 'undefined' ? ydtArchiveData.map(w => w.meaning).sort(() => 0.5 - Math.random()).slice(0, 20) : ["Yanlış 1", "Yanlış 2", "Yanlış 3"];
-
-    currentHeroWords.forEach((wordObj, index) => {
-        let options = [wordObj.meaning, wrongMeanings[index*2], wrongMeanings[index*2 + 1]].sort(() => 0.5 - Math.random());
-        let html = `
-            <div class="quiz-card" id="mini-q-${index}" style="padding:15px; border-radius:15px;">
-                <p style="font-weight:bold; font-size:1.1rem; margin-bottom:10px; color:#fff;">${index+1}. "${wordObj.word}" kelimesinin anlamı nedir?</p>
-                <div style="display:grid; gap:8px;">
-                    ${options.map(opt => `<button class="quiz-opt" onclick="checkHeroMiniQuiz(this, '${opt.replace(/'/g, "\\'")}', '${wordObj.meaning.replace(/'/g, "\\'")}', ${index})">${opt}</button>`).join('')}
-                </div>
-            </div>
-        `;
-        questionBox.innerHTML += html;
-    });
-}
-
-function checkHeroMiniQuiz(btn, selected, correct, index) {
-    const card = document.getElementById(`mini-q-${index}`);
-    const options = card.querySelectorAll('.quiz-opt');
-    options.forEach(opt => opt.style.pointerEvents = 'none');
-
-    if (selected === correct) { btn.classList.add('correct-ans'); currentHeroScore++; } 
-    else {
-        btn.classList.add('wrong-ans');
-        options.forEach(opt => { if(opt.innerText === correct) opt.classList.add('correct-ans'); });
-    }
-
-    const answeredCount = document.querySelectorAll('#miniQuizQuestions .correct-ans').length + document.querySelectorAll('#miniQuizQuestions .wrong-ans').length;
-    if (answeredCount === currentHeroWords.length) {
-        if (currentHeroScore === currentHeroWords.length) {
-            document.getElementById('heroLessonActions').style.display = 'block';
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-        } else {
-            alert(`Testi geçemedin! (${currentHeroScore}/${currentHeroWords.length}) Doğrulara iyi bak, test 3 saniye içinde yeniden başlıyor.`);
-            setTimeout(() => { document.getElementById('heroLessonActions').style.display = 'none'; buildHeroMiniQuiz(); }, 3000);
-        }
-    }
-}
-
-function completeHeroLesson() {
-    currentHeroWords.forEach(w => {
-        if (!heroWords.some(hw => hw.word.toLowerCase() === w.word.toLowerCase())) {
-            heroWords.push({ id: "hero_" + Date.now() + Math.random(), word: w.word, meaning: w.meaning, level: currentHeroLevel, addedDate: Date.now() });
-        }
-    });
-
-    localStorage.setItem('heroWords', JSON.stringify(heroWords));
-    let stats = heroStats[currentHeroLevel];
-    stats.completed += 1;
-    localStorage.setItem('heroStats', JSON.stringify(heroStats));
-
-    if (stats.completed >= stats.required) alert(`🎉 Harika! ${currentHeroLevel} derslerini bitirdin. Şimdi Final Sınavı zamanı!`);
-    else alert(`✅ Ders tamamlandı! Öğrendiğin kelimeler Hero Çantasına eklendi.`);
-
-    if (typeof switchTab === 'function') switchTab('hero');
-    renderHeroRoadmap();
-}
-
-function buildHeroFinalExam(level) {
-    heroFinalScore = 0;
-    const examArea = document.getElementById('heroFinalExamArea');
-    const questionBox = document.getElementById('finalExamQuestions');
-    examArea.style.display = 'block';
-    
-    const learnedWords = heroWords.filter(w => w.level === level);
-    if(learnedWords.length < 10) {
-        alert("Sınav için Hero çantanızda yeterli kelime yok!");
-        if (typeof switchTab === 'function') switchTab('hero'); 
-        return;
-    }
-
-    heroFinalQuestions = learnedWords.sort(() => 0.5 - Math.random()).slice(0, 10);
-    const wrongMeanings = typeof ydtArchiveData !== 'undefined' ? ydtArchiveData.map(w => w.meaning).sort(() => 0.5 - Math.random()).slice(0, 40) : ["Yanlış", "Yanlış", "Yanlış"];
-
-    let html = `
-        <div style="text-align:center; margin-bottom:25px; padding: 20px; background: rgba(191, 90, 242, 0.1); border: 1px solid rgba(191, 90, 242, 0.3); border-radius: 20px;">
-            <h3 style="color:#bf5af2; margin-bottom:10px; font-size:1.5rem;">🛡️ ${level} BOSS FIGHT</h3>
-            <p style="color:var(--text); font-size:0.95rem;">Bir sonraki seviyenin kilidini kırmak için <b>10 sorudan en az 8'ini</b> doğru bilmelisin!</p>
-        </div>
-    `;
-
-    heroFinalQuestions.forEach((wordObj, index) => {
-        let options = [wordObj.meaning, wrongMeanings[index*3], wrongMeanings[index*3 + 1], wrongMeanings[index*3 + 2]].sort(() => 0.5 - Math.random());
-        html += `
-            <div class="quiz-card" id="final-q-${index}" style="border-left: 4px solid #bf5af2;">
-                <p style="font-weight:bold; font-size:1.15rem; margin-bottom:15px; color:#fff;">
-                    <span style="color:#bf5af2; margin-right:5px;">Soru ${index+1}:</span> "${wordObj.word}" kelimesinin anlamı nedir?
-                </p>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    ${options.map(opt => `<button class="quiz-opt" style="font-size:0.95rem;" onclick="checkHeroFinalExam(this, '${opt.replace(/'/g, "\\'")}', '${wordObj.meaning.replace(/'/g, "\\'")}', ${index})">${opt}</button>`).join('')}
-                </div>
-            </div>
-        `;
-    });
-    questionBox.innerHTML = html;
-}
-
-function checkHeroFinalExam(btn, selected, correct, index) {
-    const card = document.getElementById(`final-q-${index}`);
-    const options = card.querySelectorAll('.quiz-opt');
-    options.forEach(opt => opt.style.pointerEvents = 'none');
-
-    if (selected === correct) { btn.classList.add('correct-ans'); heroFinalScore++; } 
-    else {
-        btn.classList.add('wrong-ans');
-        options.forEach(opt => { if(opt.innerText === correct) opt.classList.add('correct-ans'); });
-    }
-
-    const answeredCount = document.querySelectorAll('#finalExamQuestions .correct-ans').length + document.querySelectorAll('#finalExamQuestions .wrong-ans').length;
-    if (answeredCount === heroFinalQuestions.length) {
-        setTimeout(() => {
-            if (heroFinalScore >= 8) {
-                alert(`🏆 MUHTEŞEM! ${heroFinalScore}/10 yaptın. Yeni seviyenin kilidi kırıldı!`);
-                let stats = heroStats[currentHeroLevel];
-                if (stats.next && heroStats[stats.next]) {
-                    heroStats[stats.next].unlocked = true;
-                    localStorage.setItem('heroStats', JSON.stringify(heroStats));
-                }
-            } else {
-                alert(`💥 Sınavı Geçemedin! (${heroFinalScore}/10). En az 8 doğru yapmalısın.`);
-            }
-            if (typeof switchTab === 'function') switchTab('hero');
-            renderHeroRoadmap();
-        }, 1000);
-    }
-}
-
-function openHeroBank() {
-    const listArea = document.getElementById('heroBankList');
-    if(!listArea) return;
-
-    if (!heroWords || heroWords.length === 0) {
-        listArea.innerHTML = `<div style="text-align:center; padding:40px 20px; color:var(--text-muted);"><div style="font-size:3rem; margin-bottom:10px;">🎒</div><p>Çantan şu an boş. Dersleri tamamladıkça öğreneceksin!</p></div>`;
-    } else {
-        listArea.innerHTML = [...heroWords].reverse().map(w => `
-            <div class="bento-list-item" style="border-left: 4px solid var(--accent);">
-                <div style="text-align:left;">
-                    <b style="color:var(--text); font-size:1.15rem;">${w.word}</b><br>
-                    <small style="color:#FFD60A; font-size:0.95rem; font-weight:500;">${w.meaning}</small>
-                </div>
-                <span style="background: rgba(191,90,242,0.15); color: #bf5af2; padding: 4px 10px; border-radius: 10px; font-size: 0.8rem; font-weight: bold;">${w.level}</span>
-            </div>
-        `).join('');
-    }
-    document.getElementById('heroBankModal').style.display = 'block';
-}
-
-function closeHeroBank() { document.getElementById('heroBankModal').style.display = 'none'; }
-
-
-// =======================================================================
 // [7] UYGULAMA BAŞLATILIRKEN VE GLOBAL ERİŞİM İZİNLERİ
 // =======================================================================
 window.startHeroLevel = startHeroLevel;
@@ -1574,9 +1253,6 @@ window.closeHeroBank = closeHeroBank;
 window.checkHeroMiniQuiz = checkHeroMiniQuiz;
 window.checkHeroFinalExam = checkHeroFinalExam;
 
-/// =======================================================================
-// [NİHAİ - HATASIZ] YDT SİMÜLASYON MOTORU
-// =======================================================================
 // =======================================================================
 // [NİHAİ - HATASIZ] YDT SİMÜLASYON MOTORU
 // =======================================================================
@@ -1618,7 +1294,6 @@ async function loadExamQuestion(retryCount = 0) {
     
     qBox.innerHTML = `<div class="centered" style="text-align:center; padding:20px;"><p>⏳ AI Profesyonel YDT Sorusu Hazırlıyor...</p></div>`;
 
-    // Soru tiplerine göre talimatlar...
     let specificInstruction = "Choose the word or expression that best completes the sentence.";
 
     const prompt = `Generate Question #${currentExamIdx + 1} for YDT. Strictly academic English. JSON format: {"question":"...", "a":"...", "b":"...", "c":"...", "d":"...", "e":"...", "correct":"a"}`;
@@ -1641,6 +1316,7 @@ async function loadExamQuestion(retryCount = 0) {
         qBox.innerHTML = `<button class="btn-primary" onclick="loadExamQuestion()">Hata! Tekrar Dene</button>`;
     }
 }
+
 function renderExamQuestion(q) {
     const qBox = document.getElementById('examQuestionBox');
     qBox.innerHTML = `
@@ -1658,7 +1334,6 @@ function renderExamQuestion(q) {
 }
 
 function submitExamAnswer(selected, correct, fullData) {
-    // ANALİZ İÇİN 'qIdx' OLARAK KAYDEDİYORUZ
     examAnswers.push({ qIdx: currentExamIdx, selected, correct, fullData });
     currentExamIdx++;
     if(currentExamIdx < 80) loadExamQuestion(); else finishExamEarly();
@@ -1702,9 +1377,9 @@ function finishExamEarly() {
             reportDiv.innerHTML = `<div>Soru ${i + 1}</div> <span>⚪ Boş</span>`;
         }
         reportBox.appendChild(reportDiv);
-        // ÖNEMLİ: Altındaki o hatalı reportDiv.innerHTML satırını sakın ekleme!
     }
 }
+
 function showQuestionDetail(ans) {
     const modal = document.createElement('div');
     modal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;";
@@ -1722,7 +1397,6 @@ function showQuestionDetail(ans) {
 window.startFullExam = startFullExam;
 window.confirmFinishExam = confirmFinishExam;
 
-
 function startExamTimer() {
     examTimer = setInterval(() => {
         examTimeLeft--;
@@ -1731,241 +1405,6 @@ function startExamTimer() {
         document.getElementById('examTimer').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         if(examTimeLeft <= 0) finishExamEarly();
     }, 1000);
-}
-
-async function loadExamQuestion(retryCount = 0) {
-    const qBox = document.getElementById('examQuestionBox');
-    const badge = document.getElementById('examProgressBadge');
-    
-    if (!qBox) return;
-    if (badge) badge.innerText = `Soru ${currentExamIdx + 1}`;
-    
-    qBox.innerHTML = `
-        <div class="centered" style="text-align:center; padding:20px;">
-            <p>⏳ ÖSYM Soru Havuzu Analiz Ediliyor...</p>
-            ${retryCount > 0 ? `<p style="color:var(--accent); font-size:0.8rem;">API Yoğunluğu: Tekrar deneniyor (${retryCount}/3)...</p>` : ''}
-        </div>`;
-
-    // --- [PDF ANALİZİNE DAYALI] ÖSYM RESMİ SORU DİZİLİMİ ---
-    let qType = "";
-    let specificInstruction = "";
-
-    if (currentExamIdx < 5) {
-        qType = "Vocabulary (Noun, Verb, Adj, Adv)";
-        specificInstruction = "Choose the word or expression that best completes the sentence.";
-    } else if (currentExamIdx < 15) {
-        qType = "Grammar (Tenses, Prepositions, Conjunctions)";
-        specificInstruction = "Choose the word or expression that best completes the sentence.";
-    } else if (currentExamIdx < 20) {
-        qType = "Cloze Test";
-        specificInstruction = "Choose the word or expression that best completes the sentence in the given passage.";
-    } else if (currentExamIdx < 28) {
-        qType = "Sentence Completion";
-        specificInstruction = "Choose the expression that best completes the given sentence.";
-    } else if (currentExamIdx < 33) {
-        qType = "English-Turkish Translation";
-        specificInstruction = "Choose the Turkish translation that is closest in meaning to the given English sentence.";
-    } else if (currentExamIdx < 38) {
-        qType = "Turkish-English Translation";
-        specificInstruction = "Verilen Türkçe cümleye anlamca en yakın İngilizce cümleyi bulunuz.";
-    } else if (currentExamIdx < 53) {
-        qType = "Reading Comprehension (Academic Passages)";
-        specificInstruction = "Answer the question according to the passage provided.";
-    } else if (currentExamIdx < 58) {
-        qType = "Dialogue Completion";
-        specificInstruction = "Choose the expression that best completes the dialogue.";
-    } else if (currentExamIdx < 63) {
-        qType = "Restatement (Closest Meaning)";
-        specificInstruction = "Choose the sentence that is closest in meaning to the given sentence.";
-    } else if (currentExamIdx < 68) {
-        qType = "Paragraph Completion";
-        specificInstruction = "Choose the sentence that best completes the given paragraph.";
-    } else if (currentExamIdx < 75) {
-        qType = "Situation Response";
-        specificInstruction = "Choose the expression that best fits the given situation.";
-    } else {
-        qType = "Irrelevant Sentence (Meaning Continuity)";
-        specificInstruction = "Cümleler sırasıyla okunduğunda parçanın anlam bütünlüğünü bozan cümleyi bulunuz.";
-    }
-
-    // --- [KRİTİK] ÖSYM TARZI PROMPT (PDF DNA'SIYLA) ---
-    const prompt = `You are an expert examiner for the Turkish YDT (English) exam. Use the logic from the 2023-2025 PDF booklets.
-    TASK: Generate Question #${currentExamIdx + 1} for an 80-question simulation.
-    
-    SECTION RULES:
-    - CATEGORY: ${qType}
-    - INSTRUCTION: ${specificInstruction}
-    - DIFFICULTY: High Academic (B2-C1). 
-    - LANGUAGE: Strictly Academic English (except for Turkish translation options in questions 28-38).
-    
-    SPECIAL FORMATTING RULES:
-    1. For 'Irrelevant Sentence' (76-80), provide exactly 5 sentences marked as (I), (II), (III), (IV), and (V).
-    2. For 'Translation' (28-38), ensure exact structural equivalence (subject-verb mapping).
-    3. Use authentic academic contexts (Science, History, Philosophy, Social Issues).
-    
-    FORMAT: ONLY return a JSON object:
-    {"question": "...", "a": "...", "b": "...", "c": "...", "d": "...", "e": "...", "correct": "a/b/c/d/e"}`;
-
-    const GROQ_API_KEY = "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";
-
-    try {
-        // İstekler arasına 600ms suni gecikme (429'u önlemek için)
-        await new Promise(res => setTimeout(res, 600));
-
-        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-            method: "POST",
-            headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ 
-                model: "llama-3.1-8b-instant", 
-                messages: [{ role: "user", content: prompt }], 
-                temperature: 0.3 
-            })
-        });
-
-        // 429 Hatası Durumunda Retry (Tekrar Dene)
-        if (response.status === 429 && retryCount < 3) {
-            console.warn(`429 Hatası: ${retryCount + 1}. deneme başlıyor...`);
-            return loadExamQuestion(retryCount + 1);
-        }
-
-        if (!response.ok) throw new Error(`HTTP Hata: ${response.status}`);
-
-        const data = await response.json();
-        const jsonMatch = data.choices[0].message.content.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) throw new Error("JSON Formatı Bozuk");
-        
-        const qData = JSON.parse(jsonMatch[0]);
-        qData.question = `<i style="color:var(--accent); font-size:0.85rem; font-weight:700; text-transform:uppercase;">${specificInstruction}</i><br><br>${qData.question}`;
-
-        renderExamQuestion(qData);
-    } catch (e) {
-        console.error("Sınav Motoru Hatası:", e);
-        qBox.innerHTML = `
-            <div style="text-align:center; padding:20px;">
-                <p style="color:var(--error); font-weight:800;">Bağlantı Kesildi veya Kota Doldu</p>
-                <p style="font-size:0.8rem; margin:10px 0;">${e.message}</p>
-                <button class="btn-primary" onclick="loadExamQuestion()">İsteği Tekrarla</button>
-            </div>`;
-    }
-}
-
-
-
-// Yanlışlıkla basmaları önlemek için onay kutusu
-function confirmFinishExam() {
-    const solvedCount = examAnswers.length;
-    const remainingCount = 80 - solvedCount;
-    
-    let message = `Sınavı bitirmek istediğine emin misin?\n\n`;
-    message += `✅ Çözülen: ${solvedCount}\n`;
-    message += `⚪ Kalan: ${remainingCount}\n\n`;
-    message += `Sınav sonlandırılacak ve analiz raporun hazırlanacak.`;
-
-    if (confirm(message)) {
-        finishExamEarly(); // Mevcut raporlama fonksiyonunu tetikler
-    }
-}
-
-function renderExamQuestion(q) {
-    const qBox = document.getElementById('examQuestionBox');
-    qBox.innerHTML = `
-        <div class="question-text" style="font-size: 1.2rem; line-height: 1.7; margin-bottom: 25px;">
-            ${q.question}
-        </div>
-        <div class="quiz-options">
-            ${['a','b','c','d','e'].map(letter => `
-                <button class="quiz-opt" onclick='submitExamAnswer("${letter}", "${q.correct}", ${JSON.stringify(q).replace(/'/g, "&apos;")})'>
-                    <span style="font-weight: 900; margin-right: 10px; color: var(--accent);">${letter.toUpperCase()}.</span> ${q[letter]}
-                </button>
-            `).join('')}
-        </div>
-    `;
-}
-
-function submitExamAnswer(selected, correct, fullData) {
-    // Analiz ekranı için fullData'yı da kaydediyoruz
-    examAnswers.push({ qIdx: currentExamIdx, selected, correct, fullData });
-    currentExamIdx++;
-    
-    if(currentExamIdx < 80) {
-        loadExamQuestion();
-    } else {
-        finishExamEarly();
-    }
-}
-function finishExamEarly() {
-    if (examInterval) clearInterval(examInterval);
-    
-    const solvedCount = examAnswers.length;
-    const correctCount = examAnswers.filter(a => a.selected === a.correct).length;
-    const wrongCount = solvedCount - correctCount;
-    const net = (correctCount - (wrongCount * 0.25)).toFixed(2);
-
-    document.getElementById('examActiveScreen').style.display = 'none';
-    document.getElementById('examResultContent').style.display = 'block';
-
-    document.getElementById('resCorrect').innerText = correctCount;
-    document.getElementById('resWrong').innerText = wrongCount;
-    document.getElementById('resNet').innerText = net;
-
-    const reportBox = document.getElementById('examQuestionReport');
-    reportBox.innerHTML = "";
-
-    for (let i = 0; i < 80; i++) {
-        const userAnswer = examAnswers.find(a => a.qIdx === i || a.q === i);
-        const reportDiv = document.createElement('div');
-        reportDiv.className = "report-item";
-        
-        if (userAnswer) {
-            const isCorrect = userAnswer.selected === userAnswer.correct;
-            reportDiv.classList.add(isCorrect ? 'is-correct' : 'is-wrong');
-            // TIKLAMA ÖZELLİĞİ: Burası detay sayfasını tetikler
-            reportDiv.onclick = () => showQuestionDetail(userAnswer);
-            
-            reportDiv.innerHTML = `
-                <div style="text-align:left;">
-                    <b>Soru ${i + 1}</b>
-                    <small style="display:block; font-size:0.7rem; color:var(--accent);">Analiz için tıkla</small>
-                </div>
-                <span>${isCorrect ? '✅' : '❌'}</span>
-            `;
-        } else {
-            reportDiv.style.opacity = "0.5";
-            reportDiv.innerHTML = `<div>Soru ${i + 1}</div> <span>⚪ Boş</span>`;
-        }
-        reportBox.appendChild(reportDiv);
-    }
-}
-
-function showQuestionDetail(ans) {
-    const modal = document.createElement('div');
-    modal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); backdrop-filter:blur(15px); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;";
-    
-    // Şık metinlerini alalım
-    const userText = ans.fullData[ans.selected];
-    const correctText = ans.fullData[ans.correct];
-
-    modal.innerHTML = `
-        <div style="background:#1c1c1e; padding:30px; border-radius:30px; max-width:550px; width:100%; border:1px solid rgba(255,255,255,0.1); box-shadow:0 20px 50px rgba(0,0,0,0.5);">
-            <h3 style="color:var(--accent); margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:10px;">Soru ${ans.qIdx + 1} Analizi</h3>
-            
-            <p style="color:#fff; line-height:1.6; margin-bottom:25px; font-size:1.05rem;">${ans.fullData.question}</p>
-            
-            <div style="display:grid; gap:12px;">
-                <div style="background:rgba(255,69,58,0.15); padding:15px; border-radius:15px; border:1px solid rgba(255,69,58,0.2);">
-                    <small style="color:#ff453a; font-weight:800; display:block; margin-bottom:5px; text-transform:uppercase;">Senin Cevabın</small>
-                    <span style="color:#fff;"><b>${ans.selected.toUpperCase()})</b> ${userText}</span>
-                </div>
-                
-                <div style="background:rgba(48,209,88,0.15); padding:15px; border-radius:15px; border:1px solid rgba(48,209,88,0.2);">
-                    <small style="color:#30d158; font-weight:800; display:block; margin-bottom:5px; text-transform:uppercase;">Doğru Cevap</small>
-                    <span style="color:#fff;"><b>${ans.correct.toUpperCase()})</b> ${correctText}</span>
-                </div>
-            </div>
-            
-            <button class="btn-primary" style="width:100%; margin-top:25px; padding:15px; border-radius:15px; font-weight:700;" onclick="this.parentElement.parentElement.remove()">Analizi Kapat</button>
-        </div>`;
-    document.body.appendChild(modal);
 }
 
 function toggleTactic(btn) {
@@ -1984,15 +1423,13 @@ function copyIBAN() {
     const ibanText = "TR980082900009491192072613";
     const badge = document.getElementById("copyBadge");
 
-    // Gizli bir input oluştur
     const tempInput = document.createElement("input");
     tempInput.value = ibanText;
     
-    // SAYFA KAYMASINI ENGELLEYEN STİLLER
-    tempInput.style.position = "fixed"; // Sayfaya göre değil, ekrana göre sabit
+    tempInput.style.position = "fixed"; 
     tempInput.style.left = "0";
     tempInput.style.top = "0";
-    tempInput.style.opacity = "0"; // Görünmez yap
+    tempInput.style.opacity = "0"; 
     tempInput.style.width = "1px";
     tempInput.style.height = "1px";
     tempInput.style.padding = "0";
@@ -2003,7 +1440,6 @@ function copyIBAN() {
 
     document.body.appendChild(tempInput);
 
-    // Odaklanırken sayfanın kaymasını engelle (preventScroll: true)
     tempInput.focus({ preventScroll: true });
     tempInput.select();
     tempInput.setSelectionRange(0, 99999); 
@@ -2023,22 +1459,19 @@ function copyIBAN() {
 
     document.body.removeChild(tempInput);
 }
-// EKSİK OLAN VE HATAYA SEBEP OLAN FONKSİYON
 function handleCopyUI(badge) {
     if (!badge) return;
     
     const originalText = "KOPYALA";
     
-    // Görsel geri bildirim ver
     badge.innerText = "KOPYALANDI! ✅";
-    badge.style.background = "#30d158"; // Yeşil renk
+    badge.style.background = "#30d158"; 
     badge.style.borderColor = "#30d158";
     badge.style.color = "#fff";
     badge.style.opacity = "1";
-    badge.style.transform = "scale(1.05)"; // Hafifçe büyüsün
+    badge.style.transform = "scale(1.05)"; 
     badge.style.transition = "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
 
-    // 2 saniye sonra her şeyi eski şık haline döndür
     setTimeout(() => {
         badge.innerText = originalText;
         badge.style.background = "rgba(255,255,255,0.05)";
@@ -2048,6 +1481,90 @@ function handleCopyUI(badge) {
         badge.style.transform = "scale(1)";
     }, 2000);
 }
+
+// ==========================================
+// ZERO TO HERO - KONTROL VE SIFIRLAMA MOTORU
+// ==========================================
+
+function checkHeroMiniQuiz(btn, selected, correct, index) {
+    const card = document.getElementById(`mini-q-${index}`);
+    const options = card.querySelectorAll('.quiz-opt');
+    options.forEach(opt => opt.style.pointerEvents = 'none');
+
+    if (selected === correct) { 
+        btn.classList.add('correct-ans'); 
+        currentHeroScore++; 
+    } else {
+        btn.classList.add('wrong-ans');
+        options.forEach(opt => { if(opt.innerText === correct) opt.classList.add('correct-ans'); });
+    }
+
+    const totalQ = currentHeroWords.length;
+    const wrongCount = document.querySelectorAll('#miniQuizQuestions .wrong-ans').length;
+    const answeredCount = document.querySelectorAll('#miniQuizQuestions .correct-ans').length + wrongCount;
+    const restartContainer = document.getElementById('heroRestartContainer');
+
+    if (restartContainer && (wrongCount >= Math.ceil(totalQ / 2) || (answeredCount === totalQ && currentHeroScore < totalQ))) {
+        restartContainer.style.display = 'block';
+        restartContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    if (answeredCount === totalQ && currentHeroScore === totalQ) {
+        const actionsBox = document.getElementById('heroLessonActions');
+        actionsBox.style.display = 'block';
+        if(restartContainer) restartContainer.style.display = 'none';
+        actionsBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+}
+
+function checkHeroFinalExam(btn, selected, correct, index) {
+    const card = document.getElementById(`final-q-${index}`);
+    const options = card.querySelectorAll('.quiz-opt');
+    options.forEach(opt => opt.style.pointerEvents = 'none');
+
+    if (selected === correct) { 
+        btn.classList.add('correct-ans'); 
+        heroFinalScore++; 
+    } else {
+        btn.classList.add('wrong-ans');
+        options.forEach(opt => { if(opt.innerText === correct) opt.classList.add('correct-ans'); });
+    }
+
+    const totalQ = heroFinalQuestions.length;
+    const wrongCount = document.querySelectorAll('#finalExamQuestions .wrong-ans').length;
+    const answeredCount = document.querySelectorAll('#finalExamQuestions .correct-ans').length + wrongCount;
+    const restartContainer = document.getElementById('heroRestartContainer');
+
+    if (restartContainer && (wrongCount >= 3 || (answeredCount === totalQ && heroFinalScore < 8))) {
+        restartContainer.style.display = 'block';
+        restartContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    if (answeredCount === totalQ && heroFinalScore >= 8) {
+        setTimeout(() => {
+            alert(`🏆 MUHTEŞEM! ${heroFinalScore}/10 yaptın. Yeni seviyenin kilidi kırıldı!`);
+            let stats = heroStats[currentHeroLevel];
+            if (stats.next && heroStats[stats.next]) {
+                heroStats[stats.next].unlocked = true;
+                localStorage.setItem('heroStats', JSON.stringify(heroStats));
+            }
+            if (typeof switchTab === 'function') switchTab('hero');
+            renderHeroRoadmap();
+        }, 1000);
+    }
+}
+
+function restartZeroToHeroExam() {
+    const restartContainer = document.getElementById('heroRestartContainer');
+    if(restartContainer) restartContainer.style.display = 'none';
+    
+    if (currentHeroLevel) {
+        startHeroLevel(currentHeroLevel);
+    }
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 
 window.onload = () => { 
     if(typeof renderWords === 'function') renderWords(); 
