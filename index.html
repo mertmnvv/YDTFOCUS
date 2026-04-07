@@ -884,30 +884,46 @@
             </div>
         </section>
 
-        <section id="heroLessonSection" class="tab-panel fade-in">
-            <div class="app-grid" style="max-width: 800px;">
-                <button onclick="switchTab('hero')" class="btn-ghost" style="margin-bottom: 10px;">🔙 Haritaya Dön</button>
-                <div class="glass-card">
-                    <h2 id="heroLessonTitle" class="section-title" style="color:var(--accent); text-align:center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom:15px; margin-bottom:20px;">Ders Yükleniyor...</h2>
-                    <div id="heroLessonLoading" class="centered">
-                        <div class="illustration-box" style="animation: pulse 1.5s infinite; font-size: 4rem;">👨‍🏫</div>
-                        <p style="color: var(--accent); font-weight: bold; margin-top: 10px;">AI Eğitmeniniz dersi yazıyor...</p>
-                    </div>
-                    <div id="heroLessonContent" class="reading-area" style="display: none; padding: 10px;"></div>
-                    <div id="heroMiniQuizArea" style="display: none; margin-top: 30px; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 20px; border: 1px solid var(--border);">
-                        <h3 style="text-align:center; color:var(--accent); margin-bottom:15px;">🧠 Öğrendiklerini Kanıtla</h3>
-                        <div id="miniQuizQuestions" style="display: flex; flex-direction: column; gap: 15px;"></div>
-                    </div>
-                    <div id="heroFinalExamArea" style="display: none; margin-top: 20px;">
-                        <div id="finalExamQuestions" style="display: flex; flex-direction: column; gap: 15px;"></div>
-                    </div>
-                    <div id="heroLessonActions" style="display: none; margin-top: 30px; text-align: center;">
-                        <button class="btn-primary large-btn" onclick="completeHeroLesson()" style="background:#30d158; color:#000;">✅ Dersi Tamamla & Kelimeleri Al</button>
-                    </div>
-                </div>
+       <section id="heroLessonSection" class="tab-panel fade-in">
+    <div class="app-grid" style="max-width: 800px;">
+        <button onclick="switchTab('hero')" class="btn-ghost" style="margin-bottom: 10px;">🔙 Haritaya Dön</button>
+        <div class="glass-card">
+            <h2 id="heroLessonTitle" class="section-title" style="color:var(--accent); text-align:center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom:15px; margin-bottom:20px;">Ders Yükleniyor...</h2>
+            
+            <div id="heroLessonLoading" class="centered">
+                <div class="illustration-box" style="animation: pulse 1.5s infinite; font-size: 4rem;">👨‍🏫</div>
+                <p style="color: var(--accent); font-weight: bold; margin-top: 10px;">AI Eğitmeniniz dersi yazıyor...</p>
             </div>
-        </section>
+            
+            <div id="heroLessonContent" class="reading-area" style="display: none; padding: 10px;"></div>
+            
+            <div id="heroMiniQuizArea" style="display: none; margin-top: 30px; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 20px; border: 1px solid var(--border);">
+                <h3 style="text-align:center; color:var(--accent); margin-bottom:15px;">🧠 Öğrendiklerini Kanıtla</h3>
+                <div id="miniQuizQuestions" style="display: flex; flex-direction: column; gap: 15px;"></div>
+            </div>
+            
+            <div id="heroFinalExamArea" style="display: none; margin-top: 20px;">
+                <div id="finalExamQuestions" style="display: flex; flex-direction: column; gap: 15px;"></div>
+            </div>
+            
+            <div id="heroLessonActions" style="display: none; margin-top: 30px; text-align: center;">
+                <button class="btn-primary large-btn" onclick="completeHeroLesson()" style="background:#30d158; color:#000;">✅ Dersi Tamamla & Kelimeleri Al</button>
+            </div>
 
+            <div id="heroRestartContainer" style="display: none; text-align: center; margin-top: 30px; padding: 25px; background: rgba(255, 69, 58, 0.05); border: 1px dashed var(--error); border-radius: 20px;">
+                <div style="font-size: 2.5rem; margin-bottom: 10px;">🧘‍♂️</div>
+                <h4 style="color: var(--error); margin-bottom: 10px; font-size: 1.2rem;">Biraz Mola Verelim mi?</h4>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5;">
+                    Soruların yarısından fazlasında hata yaptın. Moral bozmak yok! İstersen bu testi tamamen sıfırlayıp taze bir başlangıç yapabilirsin.
+                </p>
+                <button class="btn-primary" style="background: var(--error); margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="restartZeroToHeroExam()">
+                    🔄 Sınavı Baştan Başlat
+                </button>
+            </div>
+
+        </div>
+    </div>
+</section>
         <section id="examSimulationSection" class="tab-panel fade-in">
             <div class="exam-container">
                 <div id="examStartScreen" class="student-welcome-card">
