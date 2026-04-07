@@ -91,13 +91,17 @@
                     Papara ile Hızlı Gönder
                 </a>
 
-                <div class="iban-wrapper" onclick="copyIBAN()" style="background: rgba(0,0,0,0.4); padding: 12px 15px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: border 0.3s;">
-                    <div style="display: flex; flex-direction: column;">
-                        <span style="font-size: 0.6rem; color: #8f2cf8; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px;">IBAN (Dokun ve Kopyala)</span>
-                        <code id="myIban" style="font-size: 0.85rem; color: #fff; font-family: monospace;">TR98 0082 9000 0949 1192 0726 13</code>
-                    </div>
-                    <div id="copyBadge" style="background: rgba(255,255,255,0.05); color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; border: 1px solid rgba(255,255,255,0.2);">KOPYALA</div>
-                </div>
+               <div class="iban-wrapper" 
+     onclick="copyIBAN()" 
+     ontouchstart="copyIBAN()" 
+     style="background: rgba(0,0,0,0.4); padding: 12px 15px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); -webkit-tap-highlight-color: transparent;">
+    
+    <div style="display: flex; flex-direction: column; pointer-events: none;">
+        <span style="font-size: 0.6rem; color: #8f2cf8; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px;">IBAN (Dokun ve Kopyala)</span>
+        <code id="myIban" style="font-size: 0.85rem; color: #fff; font-family: monospace;">TR98 0082 9000 0949 1192 0726 13</code>
+    </div>
+    <div id="copyBadge" style="background: rgba(255,255,255,0.05); color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; border: 1px solid rgba(255,255,255,0.2); pointer-events: none;">KOPYALA</div>
+</div>
             </div>
             
             <div style="margin-top: 12px; font-size: 0.8rem; color: var(--text-muted); text-align: right;">
