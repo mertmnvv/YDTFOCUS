@@ -75,6 +75,78 @@
                 <div class="bento-label">Çalışma Süresi</div>
             </div>
         </div>
+   <div class="bento-box support-card" style="grid-column: span 2; background: linear-gradient(135deg, rgba(143, 44, 248, 0.15), rgba(255, 221, 0, 0.05)); border: 1px dashed #8f2cf8; padding: 25px; border-radius: 24px; margin-top: 20px;">
+    <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+        <div style="font-size: 2.8rem; filter: drop-shadow(0 0 10px #8f2cf8);">☕</div>
+        
+        <div style="flex: 1; min-width: 250px;">
+            <h4 style="color: #fff; margin: 0; font-size: 1.15rem; font-weight: 800; letter-spacing: -0.5px;">Geliştiriciye Bir Kahve Ismarla</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 8px 0 18px 0; line-height: 1.5;">
+                Bu platform YDT öğrencileri için tamamen ücretsiz geliştirilmektedir. Desteğin, AI ve sunucu giderlerini karşılamaya yardımcı olur.
+            </p>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <a href="https://ppr.ist/2n3O2SIiy" target="_blank" style="text-decoration: none; background: #8f2cf8; color: #fff; padding: 14px; border-radius: 14px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 800; font-size: 0.95rem; box-shadow: 0 4px 15px rgba(143, 44, 248, 0.3); transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <span style="background:#fff; color:#8f2cf8; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px;">P</span> 
+                    Papara ile Hızlı Gönder
+                </a>
+
+                <div class="iban-wrapper" onclick="copyIBAN()" style="background: rgba(0,0,0,0.4); padding: 12px 15px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: border 0.3s;">
+                    <div style="display: flex; flex-direction: column;">
+                        <span style="font-size: 0.6rem; color: #8f2cf8; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px;">IBAN (Dokun ve Kopyala)</span>
+                        <code id="myIban" style="font-size: 0.85rem; color: #fff; font-family: monospace;">TR98 0082 9000 0949 1192 0726 13</code>
+                    </div>
+                    <div id="copyBadge" style="background: rgba(255,255,255,0.05); color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; border: 1px solid rgba(255,255,255,0.2);">KOPYALA</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 12px; font-size: 0.8rem; color: var(--text-muted); text-align: right;">
+                Alıcı: <b style="color: #fff;">Mert Manav</b>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="bank-selector-container" style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+    <div style="font-size: 0.65rem; color: var(--text-muted); text-align: center; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; font-weight: 700;">
+        Kopyaladıysan Bankanı Seç
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+        <a href="https://www.ziraatbank.com.tr" target="_blank" class="bank-pill">Ziraat</a>
+        <a href="https://www.isbank.com.tr" target="_blank" class="bank-pill">İş Cep</a>
+        <a href="https://www.garantibbva.com.tr" target="_blank" class="bank-pill">Garanti</a>
+        <a href="https://www.akbank.com" target="_blank" class="bank-pill">Akbank</a>
+    </div>
+</div>
+
+<style>
+.bank-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.7rem;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: center;
+}
+
+.bank-pill:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.bank-pill:active {
+    transform: translateY(0);
+}
+</style>
+
 
         <div class="bento-box bento-levels">
             <div class="level-item clickable-stat" id="rowLvl0" onclick="showStatsDetail('lvl0')">

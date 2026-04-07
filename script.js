@@ -1980,6 +1980,28 @@ function toggleTactic(btn) {
         btn.style.background = "rgba(255, 159, 10, 0.1)";
     }
 }
+
+function copyIBAN() {
+    const ibanText = "TR980082900009491192072613";
+    navigator.clipboard.writeText(ibanText).then(() => {
+        const badge = document.getElementById("copyBadge");
+        badge.innerText = "KOPYALANDI! ✅";
+        badge.style.background = "#30d158";
+        badge.style.borderColor = "#30d158";
+        badge.style.color = "#fff";
+        
+        setTimeout(() => {
+            badge.innerText = "KOPYALA";
+            badge.style.background = "rgba(255,255,255,0.05)";
+            badge.style.borderColor = "rgba(255,255,255,0.2)";
+        }, 2000);
+    });
+}
+
+
+
+
+
 window.onload = () => { 
     if(typeof renderWords === 'function') renderWords(); 
     if(typeof updateDashboard === 'function') updateDashboard(); 
