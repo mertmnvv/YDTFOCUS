@@ -1980,24 +1980,64 @@ function toggleTactic(btn) {
         btn.style.background = "rgba(255, 159, 10, 0.1)";
     }
 }
-
 function copyIBAN() {
+    // Boşluksuz saf IBAN (Bankalar bunu daha kolay tanır)
     const ibanText = "TR980082900009491192072613";
-    navigator.clipboard.writeText(ibanText).then(() => {
-        const badge = document.getElementById("copyBadge");
-        badge.innerText = "KOPYALANDI! ✅";
-        badge.style.background = "#30d158";
-        badge.style.borderColor = "#30d158";
-        badge.style.color = "#fff";
-        
-        setTimeout(() => {
-            badge.innerText = "KOPYALA";
-            badge.style.background = "rgba(255,255,255,0.05)";
-            badge.style.borderColor = "rgba(255,255,255,0.2)";
-        }, 2000);
-    });
+    const badge = document.getElementById("copyBadge");
+
+    // 1. YÖNTEM: Modern Tarayıcılar (HTTPS varsa)
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(ibanText).then(() => {
+            showCopySuccess(badge);
+        }).catch(err => {
+            // Eğer başarısız olursa 2. yönteme geç
+            fallbackCopyTextToClipboard(ibanText, badge);
+        });
+    } else {
+        // 2. YÖNTEM: Eski Telefonlar ve HTTP Bağlantıları (Gizli Input Yöntemi)
+        fallbackCopyTextToClipboard(ibanText, badge);
+    }
 }
 
+function fallbackCopyTextToClipboard(text, badge) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    
+    // TextArea'yı ekranda görünmez yap ama DOM'da olsun
+    textArea.style.position = "fixed";
+    textArea.style.left = "-9999px";
+    textArea.style.top = "0";
+    document.body.appendChild(textArea);
+    
+    textArea.focus();
+    textArea.select();
+    textArea.setSelectionRange(0, 99999); // Mobil cihazlar için geniş seçim aralığı
+
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) showCopySuccess(badge);
+    } catch (err) {
+        console.error('Fallback kopyalama hatası:', err);
+        alert("IBAN kopyalanamadı, lütfen manuel kopyalayın: " + text);
+    }
+
+    document.body.removeChild(textArea);
+}
+
+function showCopySuccess(badge) {
+    const originalText = badge.innerText;
+    badge.innerText = "KOPYALANDI! ✅";
+    badge.style.background = "#30d158";
+    badge.style.borderColor = "#30d158";
+    badge.style.color = "#fff";
+    
+    setTimeout(() => {
+        badge.innerText = "KOPYALA";
+        badge.style.background = "rgba(255,255,255,0.05)";
+        badge.style.borderColor = "rgba(255,255,255,0.2)";
+        badge.style.color = "#fff";
+    }, 2000);
+}
 
 
 
