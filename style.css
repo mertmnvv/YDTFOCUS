@@ -1441,16 +1441,18 @@ select.sub-tab { background: var(--bg); border: 1px solid var(--border); }
         transform: rotate(var(--angle)) translateX(0px) rotate(calc(var(--angle) * -1)) scale(0);
         opacity: 0; transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .mobile-radial-menu.is-open .radial-item {
-        transform: rotate(var(--angle)) translateX(130px) rotate(calc(var(--angle) * -1)) scale(1);
+  .mobile-radial-menu.is-open .radial-item {
+        /* 130px olan açılma mesafesini 155px yaptık */
+        transform: rotate(var(--angle)) translateX(155px) rotate(calc(var(--angle) * -1)) scale(1);
         opacity: 1;
     }
     
-/* Animasyon Gecikmeleri */
-.radial-item:nth-child(2) { transition-delay: 0.05s; }
-.radial-item:nth-child(3) { transition-delay: 0.10s; }
-.radial-item:nth-child(4) { transition-delay: 0.15s; }
-.radial-item:nth-child(5) { transition-delay: 0.20s; }
-.radial-item:nth-child(6) { transition-delay: 0.25s; }
-.radial-item:nth-child(7) { transition-delay: 0.30s; } /* YENİ EKLENEN HERO İÇİN */
+    /* Animasyon Gecikmeleri (Merkez buton 1. olduğu için etrafındakiler 2'den 8'e kadar sıralanır) */
+    .radial-item:nth-child(2) { transition-delay: 0.05s; }
+    .radial-item:nth-child(3) { transition-delay: 0.10s; }
+    .radial-item:nth-child(4) { transition-delay: 0.15s; }
+    .radial-item:nth-child(5) { transition-delay: 0.20s; }
+    .radial-item:nth-child(6) { transition-delay: 0.25s; }
+    .radial-item:nth-child(7) { transition-delay: 0.30s; }
+    .radial-item:nth-child(8) { transition-delay: 0.35s; } /* YENİ: 7. Daire (Simülasyon) için */
 }
