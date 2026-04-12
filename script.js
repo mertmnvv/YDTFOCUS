@@ -1613,6 +1613,8 @@ function checkHeroFinalExam(btn, selected, correct, index) {
     }
 }
 
+
+
 function restartZeroToHeroExam() {
     const restartContainer = document.getElementById('heroRestartContainer');
     if(restartContainer) restartContainer.style.display = 'none';
@@ -1622,6 +1624,49 @@ function restartZeroToHeroExam() {
     }
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+
+// ==========================================
+// YASAL METİN MODALI (GİZLİLİK VE KOŞULLAR)
+// ==========================================
+function openLegalModal(type) {
+    const modal = document.getElementById('legalModal');
+    const title = document.getElementById('legalTitle');
+    const body = document.getElementById('legalBody');
+    
+    if (!modal) return;
+
+    if(type === 'privacy') {
+        title.innerText = "Gizlilik Politikası";
+        body.innerHTML = `
+            <p>YDT Focus ("biz"), kullanıcı gizliliğine önem verir. Bu metin, verilerinizin nasıl toplandığını açıklar.</p>
+            <h4 style="color:var(--accent); margin-top:15px;">1. Veri Toplama</h4>
+            <p>Uygulamamız kelimelerinizi ve ilerlemenizi tarayıcınızın yerel depolama alanında (LocalStorage) saklar. Bu veriler harici sunucularımıza gönderilmez.</p>
+            <h4 style="color:var(--accent); margin-top:15px;">2. Çerezler (Cookies)</h4>
+            <p>Sitemizde reklamları yönetmek ve analitik veriler toplamak amacıyla Google (AdSense) gibi üçüncü taraf hizmet sağlayıcılar çerez kullanabilir.</p>
+            <h4 style="color:var(--accent); margin-top:15px;">3. Veri Güvenliği</h4>
+            <p>Verileriniz cihazınızda saklandığı için tarayıcı geçmişini temizleme işlemleri (cache clearing) verilerin kaybolmasına neden olabilir. Düzenli olarak "İndir" butonuyla yedeğinizi almanız önerilir.</p>
+        `;
+    } else if(type === 'terms') {
+        title.innerText = "Kullanım Koşulları";
+        body.innerHTML = `
+            <p>YDT Focus platformuna erişerek aşağıdaki şartları kabul etmiş sayılırsınız:</p>
+            <h4 style="color:var(--accent); margin-top:15px;">1. Hizmet Amacı</h4>
+            <p>Bu site tamamen eğitim amaçlı ücretsiz bir araçtır. İçeriklerin doğruluğu konusunda azami çaba gösterilse de kesin sınav garantisi vermez.</p>
+            <h4 style="color:var(--accent); margin-top:15px;">2. Fikri Mülkiyet</h4>
+            <p>YDT Focus yazılım mimarisi, tasarımı ve kod yapısı Mert Manav'a aittir. Ticari amaçla izinsiz kopyalanamaz veya satılamaz.</p>
+            <h4 style="color:var(--accent); margin-top:15px;">3. Kullanım Sorumluluğu</h4>
+            <p>Uygulamanın kullanımından doğabilecek teknik sorunlardan, AI hatalarından veya veri kayıplarından kullanıcı sorumludur.</p>
+        `;
+    }
+    
+    modal.style.display = 'block';
+}
+
+function closeLegalModal() {
+    const modal = document.getElementById('legalModal');
+    if(modal) modal.style.display = 'none';
 }
 
 
