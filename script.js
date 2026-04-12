@@ -1294,9 +1294,62 @@ async function loadExamQuestion(retryCount = 0) {
     
     qBox.innerHTML = `<div class="centered" style="text-align:center; padding:20px;"><p>⏳ AI Profesyonel YDT Sorusu Hazırlıyor...</p></div>`;
 
-    let specificInstruction = "Choose the word or expression that best completes the sentence.";
+    // --- [YENİ] ÖSYM RESMİ SORU DİZİLİMİ (AI'A KESİN TALİMATLAR) ---
+    let qType = "";
+    let specificInstruction = "";
 
-    const prompt = `Generate Question #${currentExamIdx + 1} for YDT. Strictly academic English. JSON format: {"question":"...", "a":"...", "b":"...", "c":"...", "d":"...", "e":"...", "correct":"a"}`;
+    if (currentExamIdx < 5) {
+        qType = "Vocabulary (Kelime Bilgisi)";
+        specificInstruction = "Soru metni olarak İngilizce bir cümle yaz ve içinde bir tane boşluk (_____) bırak. Seçenekler (a,b,c,d,e) bu boşluğa gelebilecek 5 farklı İNGİLİZCE KELİME (isim, sıfat, zarf veya fiil) olsun.";
+    } else if (currentExamIdx < 15) {
+        qType = "Grammar (Gramer ve Tenses)";
+        specificInstruction = "Soru metni olarak İngilizce bir cümle yaz ve içinde bir veya iki tane boşluk (_____) bırak. Seçenekler bu boşluklara gelebilecek İNGİLİZCE GRAMER yapıları (zamanlar, edatlar veya bağlaçlar) olsun.";
+    } else if (currentExamIdx < 20) {
+        qType = "Cloze Test (Paragraf İçi Boşluk)";
+        specificInstruction = "Kısa bir İngilizce paragraf yaz ve sadece BİR cümlesinin içine bir boşluk (_____) bırak. Seçenekler uygun kelime veya gramer bağlacı olsun.";
+    } else if (currentExamIdx < 28) {
+        qType = "Sentence Completion (Cümle Tamamlama)";
+        specificInstruction = "Yarım bırakılmış (sonu veya başı _____ ile biten/başlayan) İngilizce bir cümle ver. Seçenekler bu cümleyi anlamca ve gramerce tamamlayan İngilizce yan cümlecikler olsun.";
+    } else if (currentExamIdx < 33) {
+        qType = "English to Turkish Translation";
+        specificInstruction = "Soru metni olarak Akademik ve uzun bir İNGİLİZCE cümle ver. Seçenekler bu cümlenin TÜRKÇE çevirileri olsun. Sadece biri tam doğru çeviri olsun.";
+    } else if (currentExamIdx < 38) {
+        qType = "Turkish to English Translation";
+        specificInstruction = "Soru metni olarak Akademik ve uzun bir TÜRKÇE cümle ver. Seçenekler bu cümlenin İNGİLİZCE çevirileri olsun.";
+    } else if (currentExamIdx < 53) {
+        qType = "Reading Comprehension (Paragraf Sorusu)";
+        specificInstruction = "Soru metni olarak B2-C1 seviye İngilizce bir okuma parçası yaz. Sonuna bu parçanın ana fikrini veya detayını soran İngilizce bir soru ekle. Seçenekler İngilizce cevaplar olsun.";
+    } else if (currentExamIdx < 58) {
+        qType = "Dialogue Completion (Diyalog Tamamlama)";
+        specificInstruction = "İki kişi arasında geçen İngilizce bir diyalog yaz. Konuşmacılardan birinin cümlesinin yerine boşluk (____) bırak. Seçenekler bu boşluğa uyan İngilizce yanıtlar olsun.";
+    } else if (currentExamIdx < 63) {
+        qType = "Restatement (Anlamca En Yakın Cümle)";
+        specificInstruction = "Soru olarak zor bir İngilizce cümle ver. Seçenekler, bu cümlenin farklı İngilizce kelimeler ve yapılarla ifade edilmiş halleri olsun.";
+    } else if (currentExamIdx < 68) {
+        qType = "Paragraph Completion (Paragraf Tamamlama)";
+        specificInstruction = "İngilizce bir paragraf yaz ve ortasından bir cümleyi çıkarıp yerine boşluk (____) koy. Seçenekler bu boşluğa uyan İngilizce cümleler olsun.";
+    } else if (currentExamIdx < 75) {
+        qType = "Situation Response (Duruma Uygun Düşen İfade)";
+        specificInstruction = "İngilizce bir senaryo (situation) anlat ve bu durumda karakterin ne söyleyeceğini sor. Seçenekler tırnak içinde (\"...\") İngilizce tepkiler olsun.";
+    } else {
+        qType = "Irrelevant Sentence (Anlam Bütünlüğünü Bozan Cümle)";
+        specificInstruction = "Birbiriyle bağlantılı 5 İngilizce cümleden oluşan bir paragraf yaz. Her cümleyi (I), (II), (III), (IV), (V) diye numaralandır. Sadece BİR cümle konudan sapmış (ilgisiz) olsun. Seçenekler sırasiyla (I), (II), (III), (IV), (V) olmalıdır.";
+    }
+
+    // --- [KRİTİK YENİ PROMPT] ---
+    const prompt = `You are a strict, professional English language examiner creating the Turkish YDT (Foreign Language Test) Exam.
+    TASK: Generate Question #${currentExamIdx + 1} for an 80-question simulation.
+    
+    QUESTION TYPE: ${qType}
+    STRICT RULE FOR THIS TYPE: ${specificInstruction}
+    
+    CRITICAL WARNING: 
+    THIS IS AN ENGLISH PROFICIENCY TEST! NEVER ask factual trivia questions (e.g., Do NOT ask "What is photosynthesis?" or "Who discovered gravity?"). You must test the user's English reading, grammar, vocabulary, and translation skills. You can use academic topics (history, science) as the context/backdrop, but the question MUST be about the English language.
+    
+    FORMAT REQUIREMENT: 
+    Return ONLY a valid JSON object. No extra text, no markdown styling outside the JSON. Use "a, b, c, d, e" exactly for keys.
+    {"question": "...", "a": "...", "b": "...", "c": "...", "d": "...", "e": "...", "correct": "a"}`;
+
     const GROQ_API_KEY = "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";
 
     try {
@@ -1304,12 +1357,18 @@ async function loadExamQuestion(retryCount = 0) {
         const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
             method: "POST",
             headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ model: "llama-3.1-8b-instant", messages: [{ role: "user", content: prompt }], temperature: 0.3 })
+            body: JSON.stringify({ 
+                model: "llama-3.1-8b-instant", 
+                messages: [{ role: "user", content: prompt }], 
+                temperature: 0.3,
+                response_format: { type: "json_object" } 
+            })
         });
 
         if (response.status === 429 && retryCount < 3) return loadExamQuestion(retryCount + 1);
         const data = await response.json();
-        const qData = JSON.parse(data.choices[0].message.content.match(/\{[\s\S]*\}/)[0]);
+        const rawContent = data.choices[0].message.content;
+        const qData = JSON.parse(rawContent);
         
         renderExamQuestion(qData);
     } catch (e) {
