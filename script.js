@@ -121,7 +121,7 @@ async function generateAIText() {
     else if (topic === "exam") prompt = `Write a highly academic English reading comprehension passage formatted exactly like a YDT, YDS, or TOEFL exam text. Level: ${level} CEFR. Topic: History, Sociology, Biology, or Psychology. Use advanced vocabulary, complex clauses, and formal tone. Length: 150-200 words. Do NOT include any titles or markdown. ONLY return the pure text paragraph.`;
     else prompt = `Write a single English reading paragraph. Level: ${level} CEFR. Topic: Interesting historical facts, psychology, or daily life. Length: around 120-180 words. Do NOT include any titles, markdown formatting, or translations. ONLY return the pure English text paragraph.`;
 
-    const GROQ_API_KEY = "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"; 
+    const GROQ_API_KEY = "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"; 
     const url = "https://api.groq.com/openai/v1/chat/completions";
 
     try {
@@ -312,7 +312,7 @@ async function startHeroLevel(level) {
     Task: Write an engaging paragraph (4-5 sentences) using ALL target words. Write a 3-line dialogue. Add a "Vocabulary Review" section at the end with these exact Turkish meanings: ${meaningListStr}. 
     CRITICAL RULES: ${levelInstruction} AND ${stageInstruction}. No markdown asterisks.`;
 
-    const GROQ_API_KEY = "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"; 
+    const GROQ_API_KEY = "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"; 
 
     try {
         const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -1103,7 +1103,7 @@ async function generateAIQuiz() {
     
     Text to analyze: ${text}`;
     
-    const GROQ_API_KEY = "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"; 
+    const GROQ_API_KEY = "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"; 
     
     try {
         const response = await fetch("https://api.groq.com/openai/v1/chat/completions", { 
@@ -1297,7 +1297,7 @@ async function loadExamQuestion(retryCount = 0) {
     let specificInstruction = "Choose the word or expression that best completes the sentence.";
 
     const prompt = `Generate Question #${currentExamIdx + 1} for YDT. Strictly academic English. JSON format: {"question":"...", "a":"...", "b":"...", "c":"...", "d":"...", "e":"...", "correct":"a"}`;
-    const GROQ_API_KEY = "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";
+    const GROQ_API_KEY = "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";
 
     try {
         await new Promise(res => setTimeout(res, 600));
