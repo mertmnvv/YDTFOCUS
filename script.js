@@ -778,16 +778,19 @@ function setupTooltip(span, target) {
     span.onmouseleave = () => { document.getElementById('tooltip').style.display = "none"; clearTimeout(translationTimeout); };
 }
 
+// Eski ve WebView'de hata veren fonksiyonu silip bunu koyacağız:
 async function getSmartTranslation(word) {
     try {
-        const r = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=tr&dt=t&q=${encodeURIComponent(word)}`);
-        const d = await r.json();
-        if (d[2] === 'tr') {
-            const r2 = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=tr&tl=en&dt=t&q=${encodeURIComponent(word)}`);
-            const d2 = await r2.json(); return { en: d2[0][0][0].toLowerCase(), tr: word }; 
-        }
-        return { en: word, tr: d[0][0][0].toLowerCase() };
-    } catch { return { en: word, tr: "Hata" }; }
+        const response = await fetch("/api/translate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ word: word })
+        });
+        if (!response.ok) throw new Error();
+        return await response.json();
+    } catch { 
+        return { en: word, tr: "Hata" }; 
+    }
 }
 
 async function fetchDetails(word) {
