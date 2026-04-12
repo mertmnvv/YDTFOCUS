@@ -121,14 +121,14 @@ async function generateAIText() {
     else if (topic === "exam") prompt = `Write a highly academic English reading comprehension passage formatted exactly like a YDT, YDS, or TOEFL exam text. Level: ${level} CEFR. Topic: History, Sociology, Biology, or Psychology. Use advanced vocabulary, complex clauses, and formal tone. Length: 150-200 words. Do NOT include any titles or markdown. ONLY return the pure text paragraph.`;
     else prompt = `Write a single English reading paragraph. Level: ${level} CEFR. Topic: Interesting historical facts, psychology, or daily life. Length: around 120-180 words. Do NOT include any titles, markdown formatting, or translations. ONLY return the pure English text paragraph.`;
 
-    const GROQ_API_KEY = "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"; 
-    const url = "https://api.groq.com/openai/v1/chat/completions";
-
     try {
-        const response = await fetch(url, {
-            method: "POST", headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" },
+        // VERCEL BACKEND KÖPRÜSÜNE İSTEK ATILIYOR
+        const response = await fetch("/api/groq", {
+            method: "POST", 
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ model: "llama-3.1-8b-instant", messages: [{ role: "user", content: prompt }], temperature: 0.7 })
         });
+        
         if (!response.ok) throw new Error("Sunucu Hatası");
         const data = await response.json();
         
@@ -265,14 +265,12 @@ async function startHeroLevel(level) {
 
     if(typeof switchTab === 'function') switchTab('heroLesson');
     
-    // GÖRESELLERİ TEMİZLE VE YÜKLEME EKRANINI AÇ
     document.getElementById('heroLessonContent').style.display = 'none';
     document.getElementById('heroMiniQuizArea').style.display = 'none';
     document.getElementById('heroFinalExamArea').style.display = 'none';
     document.getElementById('heroLessonActions').style.display = 'none';
     document.getElementById('heroLessonLoading').style.display = 'block';
     
-    // YENİ: SIFIRLAMA KUTUSUNU HER DERSTE GİZLE
     const restartBox = document.getElementById('heroRestartContainer');
     if(restartBox) restartBox.style.display = 'none';
 
@@ -312,13 +310,14 @@ async function startHeroLevel(level) {
     Task: Write an engaging paragraph (4-5 sentences) using ALL target words. Write a 3-line dialogue. Add a "Vocabulary Review" section at the end with these exact Turkish meanings: ${meaningListStr}. 
     CRITICAL RULES: ${levelInstruction} AND ${stageInstruction}. No markdown asterisks.`;
 
-    const GROQ_API_KEY = "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"; 
-
     try {
-        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-            method: "POST", headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" },
+        // VERCEL BACKEND KÖPRÜSÜNE İSTEK ATILIYOR
+        const response = await fetch("/api/groq", {
+            method: "POST", 
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ model: "llama-3.1-8b-instant", messages: [{ role: "user", content: prompt }], temperature: 0.55, max_tokens: 800 })
         });
+        
         if (!response.ok) throw new Error("API Bağlantı Hatası");
 
         const data = await response.json();
@@ -424,16 +423,11 @@ function checkHeroMiniQuiz(btn, selected, correct, index) {
     const answeredCount = document.querySelectorAll('#miniQuizQuestions .correct-ans').length + wrongCount;
     const restartContainer = document.getElementById('heroRestartContainer');
 
-    // MOLA KUTUSU AÇILMA ŞARTI:
-    // 1. Hatalar %50'yi geçtiyse (Örn: 5 soruda 3 hata)
-    // VEYA 2. Sınav bittiyse ama tam puan (0 hata) alınamadıysa
     if (restartContainer && (wrongCount >= Math.ceil(totalQ / 2) || (answeredCount === totalQ && currentHeroScore < totalQ))) {
         restartContainer.style.display = 'block';
         restartContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    // DERSİ TAMAMLA BUTONU AÇILMA ŞARTI:
-    // Tüm sorular bittiyse VE hepsi doğruysa
     if (answeredCount === totalQ && currentHeroScore === totalQ) {
         const actionsBox = document.getElementById('heroLessonActions');
         actionsBox.style.display = 'block';
@@ -467,7 +461,6 @@ function buildHeroFinalExam(level) {
     const questionBox = document.getElementById('finalExamQuestions');
     examArea.style.display = 'block';
     
-    // Boss Fight başlangıcında mola kutusunu gizle
     const restartBox = document.getElementById('heroRestartContainer');
     if(restartBox) restartBox.style.display = 'none';
     
@@ -522,13 +515,11 @@ function checkHeroFinalExam(btn, selected, correct, index) {
     const answeredCount = document.querySelectorAll('#finalExamQuestions .correct-ans').length + wrongCount;
     const restartContainer = document.getElementById('heroRestartContainer');
 
-    // Boss Fight'ta geçme notu 8/10'dur. Bu yüzden 3 yanlış yapıldığı an mola kutusu açılır.
     if (restartContainer && (wrongCount >= 3 || (answeredCount === totalQ && heroFinalScore < 8))) {
         restartContainer.style.display = 'block';
         restartContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    // Boss Fight tamamlandıysa ve puan 8 veya üzeriyse!
     if (answeredCount === totalQ && heroFinalScore >= 8) {
         setTimeout(() => {
             alert(`🏆 MUHTEŞEM! ${heroFinalScore}/10 yaptın. Yeni seviyenin kilidi kırıldı!`);
@@ -544,16 +535,13 @@ function checkHeroFinalExam(btn, selected, correct, index) {
 }
 
 function restartZeroToHeroExam() {
-    // 1. Mola kutusunu tekrar gizle
     const restartContainer = document.getElementById('heroRestartContainer');
     if(restartContainer) restartContainer.style.display = 'none';
     
-    // 2. Dersi / Sınavı sıfırdan yeniden kur
     if (currentHeroLevel) {
         startHeroLevel(currentHeroLevel);
     }
     
-    // 3. Kullanıcıyı sayfanın başına taşı
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -620,7 +608,6 @@ function updateDashboard() {
             : `${ydtStats.dailyMinutes} dk`;
     }
 
-   // HEDEF BARI
     let targetPercentage = (total / 2000) * 100;
     if (total > 0 && targetPercentage < 1) targetPercentage = 1; 
     if (targetPercentage > 100) targetPercentage = 100;
@@ -923,7 +910,9 @@ function deleteWord(id) {
     renderWords(); updateDashboard(); if(document.getElementById('readingSection').classList.contains('active')) processAnalysis();
 }
 
-// Quiz & Flashcard Core (Open World)
+// =======================================================================
+// [6] QUIZ & FLASHCARD CORE
+// =======================================================================
 let qIdx = 0, qSet = [], currentQuizMode = "";
 function startQuiz() { if(myWords.length < 4) return alert("En az 4 kelime!"); currentQuizMode = "test"; const s = document.getElementById('bankQuizCount'); setupQuiz(myWords, s && s.value !== 'all' ? parseInt(s.value) : myWords.length); }
 function startArchiveQuiz() { currentQuizMode = "archive"; const s = document.getElementById('arcQuizCount'); setupQuiz(ydtArchiveData, s ? parseInt(s.value) : 20); }
@@ -974,14 +963,11 @@ function loadQuest() {
             const currentW = q.phrase || q.word; let wordInBank = myWords.find(w => w.word === currentW);
             
             if(o === ans) {
-                // --- DOĞRU CEVAP VERİLİRSE (Seviye Atlar) ---
                 if(typeof correctSound !== 'undefined') { correctSound.pause(); correctSound.currentTime = 0; correctSound.play().catch(()=>{}); }
                 b.classList.add('correct-ans');
                 
                 if(currentQuizMode === "smart" && wordInBank) {
                     wordInBank.level = (wordInBank.level || 0) + 1;
-                    
-                    // YENİ KURAL: 1, 2, 3, 7, 14, 30, 45, 60 gün aralıkları
                     const intervals = [1, 2, 3, 7, 14, 30, 45, 60]; 
                     const daysToAdd = intervals[Math.min(wordInBank.level - 1, intervals.length - 1)] || 1;
                     
@@ -993,14 +979,12 @@ function loadQuest() {
                 if(currentQuizMode === "mistake") wrongIds = wrongIds.filter(id => id !== currentW);
             
             } else {
-                // --- YANLIŞ CEVAP VERİLİRSE (Usta da olsa en başa döner) ---
                 if(typeof wrongSound !== 'undefined') { wrongSound.pause(); wrongSound.currentTime = 0; wrongSound.play().catch(()=>{}); }
                 b.classList.add('wrong-ans'); allOpts.forEach(opt => { if (opt.dataset.correct === 'true') opt.classList.add('correct-ans'); });
                 
                 if(wordInBank) { 
                     wordInBank.wrongCount++; 
                     if(currentQuizMode === "smart") { 
-                        // ACIMASIZ CEZA: Usta (60. gün) olsa bile "Yeni" aşamasına (0) döner ve hemen sorulur.
                         wordInBank.level = 0; 
                         wordInBank.nextReview = Date.now(); 
                     } 
@@ -1103,12 +1087,11 @@ async function generateAIQuiz() {
     
     Text to analyze: ${text}`;
     
-    const GROQ_API_KEY = "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"; 
-    
     try {
-        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", { 
+        // VERCEL BACKEND KÖPRÜSÜNE İSTEK ATILIYOR
+        const response = await fetch("/api/groq", { 
             method: "POST", 
-            headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" }, 
+            headers: { "Content-Type": "application/json" }, 
             body: JSON.stringify({ 
                 model: "llama-3.1-8b-instant", 
                 messages: [{ role: "user", content: prompt }], 
@@ -1244,17 +1227,7 @@ function createConfetti(target) {
 }
 
 // =======================================================================
-// [7] UYGULAMA BAŞLATILIRKEN VE GLOBAL ERİŞİM İZİNLERİ
-// =======================================================================
-window.startHeroLevel = startHeroLevel;
-window.completeHeroLesson = completeHeroLesson;
-window.openHeroBank = openHeroBank;
-window.closeHeroBank = closeHeroBank;
-window.checkHeroMiniQuiz = checkHeroMiniQuiz;
-window.checkHeroFinalExam = checkHeroFinalExam;
-
-// =======================================================================
-// [NİHAİ - HATASIZ] YDT SİMÜLASYON MOTORU
+// [7] YDT SİMÜLASYON MOTORU
 // =======================================================================
 let examInterval; 
 let examTimeLeft = 120 * 60; 
@@ -1294,7 +1267,6 @@ async function loadExamQuestion(retryCount = 0) {
     
     qBox.innerHTML = `<div class="centered" style="text-align:center; padding:20px;"><p>⏳ AI Profesyonel YDT Sorusu Hazırlıyor...</p></div>`;
 
-    // --- [YENİ] ÖSYM RESMİ SORU DİZİLİMİ (AI'A KESİN TALİMATLAR) ---
     let qType = "";
     let specificInstruction = "";
 
@@ -1336,7 +1308,6 @@ async function loadExamQuestion(retryCount = 0) {
         specificInstruction = "Birbiriyle bağlantılı 5 İngilizce cümleden oluşan bir paragraf yaz. Her cümleyi (I), (II), (III), (IV), (V) diye numaralandır. Sadece BİR cümle konudan sapmış (ilgisiz) olsun. Seçenekler sırasiyla (I), (II), (III), (IV), (V) olmalıdır.";
     }
 
-    // --- [KRİTİK YENİ PROMPT] ---
     const prompt = `You are a strict, professional English language examiner creating the Turkish YDT (Foreign Language Test) Exam.
     TASK: Generate Question #${currentExamIdx + 1} for an 80-question simulation.
     
@@ -1350,13 +1321,13 @@ async function loadExamQuestion(retryCount = 0) {
     Return ONLY a valid JSON object. No extra text, no markdown styling outside the JSON. Use "a, b, c, d, e" exactly for keys.
     {"question": "...", "a": "...", "b": "...", "c": "...", "d": "...", "e": "...", "correct": "a"}`;
 
-    const GROQ_API_KEY = "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";
-
     try {
         await new Promise(res => setTimeout(res, 600));
-        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        
+        // VERCEL BACKEND KÖPRÜSÜNE İSTEK ATILIYOR
+        const response = await fetch("/api/groq", {
             method: "POST",
-            headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ 
                 model: "llama-3.1-8b-instant", 
                 messages: [{ role: "user", content: prompt }], 
@@ -1453,183 +1424,10 @@ function showQuestionDetail(ans) {
     document.body.appendChild(modal);
 }
 
-window.startFullExam = startFullExam;
-window.confirmFinishExam = confirmFinishExam;
+// =======================================================================
+// [8] DİĞER ARAÇLAR (Yasal Modal, UI Efektleri vb.)
+// =======================================================================
 
-function startExamTimer() {
-    examTimer = setInterval(() => {
-        examTimeLeft--;
-        let mins = Math.floor(examTimeLeft / 60);
-        let secs = examTimeLeft % 60;
-        document.getElementById('examTimer').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-        if(examTimeLeft <= 0) finishExamEarly();
-    }, 1000);
-}
-
-function toggleTactic(btn) {
-    const content = btn.nextElementSibling;
-    if (content.style.display === "none" || content.style.display === "") {
-        content.style.display = "block";
-        btn.innerHTML = "🔽 Taktikleri Gizle";
-        btn.style.background = "rgba(255, 159, 10, 0.25)";
-    } else {
-        content.style.display = "none";
-        btn.innerHTML = "⚠️ YDT Nasıl Sorar? (ÖSYM Taktikleri)";
-        btn.style.background = "rgba(255, 159, 10, 0.1)";
-    }
-}
-function copyIBAN() {
-    const ibanText = "TR980082900009491192072613";
-    const badge = document.getElementById("copyBadge");
-
-    const tempInput = document.createElement("input");
-    tempInput.value = ibanText;
-    
-    tempInput.style.position = "fixed"; 
-    tempInput.style.left = "0";
-    tempInput.style.top = "0";
-    tempInput.style.opacity = "0"; 
-    tempInput.style.width = "1px";
-    tempInput.style.height = "1px";
-    tempInput.style.padding = "0";
-    tempInput.style.border = "none";
-    tempInput.style.outline = "none";
-    tempInput.style.boxShadow = "none";
-    tempInput.style.background = "transparent";
-
-    document.body.appendChild(tempInput);
-
-    tempInput.focus({ preventScroll: true });
-    tempInput.select();
-    tempInput.setSelectionRange(0, 99999); 
-
-    try {
-        const successful = document.execCommand('copy');
-        if (successful) {
-            handleCopyUI(badge);
-        }
-    } catch (err) {
-        if (navigator.clipboard) {
-            navigator.clipboard.writeText(ibanText).then(() => {
-                handleCopyUI(badge);
-            });
-        }
-    }
-
-    document.body.removeChild(tempInput);
-}
-function handleCopyUI(badge) {
-    if (!badge) return;
-    
-    const originalText = "KOPYALA";
-    
-    badge.innerText = "KOPYALANDI! ✅";
-    badge.style.background = "#30d158"; 
-    badge.style.borderColor = "#30d158";
-    badge.style.color = "#fff";
-    badge.style.opacity = "1";
-    badge.style.transform = "scale(1.05)"; 
-    badge.style.transition = "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
-
-    setTimeout(() => {
-        badge.innerText = originalText;
-        badge.style.background = "rgba(255,255,255,0.05)";
-        badge.style.borderColor = "rgba(255,255,255,0.2)";
-        badge.style.color = "#fff";
-        badge.style.opacity = "0.5";
-        badge.style.transform = "scale(1)";
-    }, 2000);
-}
-
-// ==========================================
-// ZERO TO HERO - KONTROL VE SIFIRLAMA MOTORU
-// ==========================================
-
-function checkHeroMiniQuiz(btn, selected, correct, index) {
-    const card = document.getElementById(`mini-q-${index}`);
-    const options = card.querySelectorAll('.quiz-opt');
-    options.forEach(opt => opt.style.pointerEvents = 'none');
-
-    if (selected === correct) { 
-        btn.classList.add('correct-ans'); 
-        currentHeroScore++; 
-    } else {
-        btn.classList.add('wrong-ans');
-        options.forEach(opt => { if(opt.innerText === correct) opt.classList.add('correct-ans'); });
-    }
-
-    const totalQ = currentHeroWords.length;
-    const wrongCount = document.querySelectorAll('#miniQuizQuestions .wrong-ans').length;
-    const answeredCount = document.querySelectorAll('#miniQuizQuestions .correct-ans').length + wrongCount;
-    const restartContainer = document.getElementById('heroRestartContainer');
-
-    if (restartContainer && (wrongCount >= Math.ceil(totalQ / 2) || (answeredCount === totalQ && currentHeroScore < totalQ))) {
-        restartContainer.style.display = 'block';
-        restartContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-
-    if (answeredCount === totalQ && currentHeroScore === totalQ) {
-        const actionsBox = document.getElementById('heroLessonActions');
-        actionsBox.style.display = 'block';
-        if(restartContainer) restartContainer.style.display = 'none';
-        actionsBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-}
-
-function checkHeroFinalExam(btn, selected, correct, index) {
-    const card = document.getElementById(`final-q-${index}`);
-    const options = card.querySelectorAll('.quiz-opt');
-    options.forEach(opt => opt.style.pointerEvents = 'none');
-
-    if (selected === correct) { 
-        btn.classList.add('correct-ans'); 
-        heroFinalScore++; 
-    } else {
-        btn.classList.add('wrong-ans');
-        options.forEach(opt => { if(opt.innerText === correct) opt.classList.add('correct-ans'); });
-    }
-
-    const totalQ = heroFinalQuestions.length;
-    const wrongCount = document.querySelectorAll('#finalExamQuestions .wrong-ans').length;
-    const answeredCount = document.querySelectorAll('#finalExamQuestions .correct-ans').length + wrongCount;
-    const restartContainer = document.getElementById('heroRestartContainer');
-
-    if (restartContainer && (wrongCount >= 3 || (answeredCount === totalQ && heroFinalScore < 8))) {
-        restartContainer.style.display = 'block';
-        restartContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-
-    if (answeredCount === totalQ && heroFinalScore >= 8) {
-        setTimeout(() => {
-            alert(`🏆 MUHTEŞEM! ${heroFinalScore}/10 yaptın. Yeni seviyenin kilidi kırıldı!`);
-            let stats = heroStats[currentHeroLevel];
-            if (stats.next && heroStats[stats.next]) {
-                heroStats[stats.next].unlocked = true;
-                localStorage.setItem('heroStats', JSON.stringify(heroStats));
-            }
-            if (typeof switchTab === 'function') switchTab('hero');
-            renderHeroRoadmap();
-        }, 1000);
-    }
-}
-
-
-
-function restartZeroToHeroExam() {
-    const restartContainer = document.getElementById('heroRestartContainer');
-    if(restartContainer) restartContainer.style.display = 'none';
-    
-    if (currentHeroLevel) {
-        startHeroLevel(currentHeroLevel);
-    }
-    
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-
-// ==========================================
-// YASAL METİN MODALI (GİZLİLİK VE KOŞULLAR)
-// ==========================================
 function openLegalModal(type) {
     const modal = document.getElementById('legalModal');
     const title = document.getElementById('legalTitle');
@@ -1669,6 +1467,30 @@ function closeLegalModal() {
     if(modal) modal.style.display = 'none';
 }
 
+function toggleTactic(btn) {
+    const content = btn.nextElementSibling;
+    if (content.style.display === "none" || content.style.display === "") {
+        content.style.display = "block";
+        btn.innerHTML = "🔽 Taktikleri Gizle";
+        btn.style.background = "rgba(255, 159, 10, 0.25)";
+    } else {
+        content.style.display = "none";
+        btn.innerHTML = "⚠️ YDT Nasıl Sorar? (ÖSYM Taktikleri)";
+        btn.style.background = "rgba(255, 159, 10, 0.1)";
+    }
+}
+
+// =======================================================================
+// [9] KÜRESEL ATAMALAR VE BAŞLATMA
+// =======================================================================
+window.startHeroLevel = startHeroLevel;
+window.completeHeroLesson = completeHeroLesson;
+window.openHeroBank = openHeroBank;
+window.closeHeroBank = closeHeroBank;
+window.checkHeroMiniQuiz = checkHeroMiniQuiz;
+window.checkHeroFinalExam = checkHeroFinalExam;
+window.startFullExam = startFullExam;
+window.confirmFinishExam = confirmFinishExam;
 
 window.onload = () => { 
     if(typeof renderWords === 'function') renderWords(); 
